@@ -1,0 +1,66 @@
+properties([pipelineTriggers([githubPush()])])
+
+
+pipeline {
+    parameters {
+        string(name: 'environment', defaultValue: 'dev', description: 'Branch')
+        booleanParam(name: 'autoApprove', defaultValue: true, description: 'Automatically run apply after generating plan?')
+        booleanParam(name: 'destroy', defaultValue: false, description: 'Destroy Terraform build?')
+
+    }
+    environment {
+        AWS_ACCESS_KEY_ID       =   credentials('access_key_aws')
+        AWS_SECRET_ACCESS_KEY   =   credentials('secret_key_aws')
+    }
+    agent any
+   tools {
+        terraform 'Final-Task'
+    }
+    stages {
+        stage('Checkout SCM') {
+          steps {
+            checkout([
+              $class: 'GitSCM',
+              branches: [[name: '$environment']],
+              userRemoteConfigs: [[
+                credentialsId: 'git-final-task', 
+                url: 'git@github.com:hopead12/Final-Task.git'
+              ]]
+             ])
+           }
+        }
+        stage('Git Checkout') {
+            steps { 
+                
+                git branch: '$environment', credentialsId: 'git-final-task', url: 'git@github.com:hopead12/Final-Task.git'
+                
+                
+            }
+        }
+        stage('Terraform init') {
+            steps { 
+                sh('terraform -chdir=DevOpsCode/Terraform init')
+            }
+        }
+        stage('Terraform apply') {
+            when {
+                not {
+                    equals expected: true, actual: params.destroy
+                }
+            }
+            steps { 
+                sh('terraform -chdir=DevOpsCode/Terraform apply --auto-approve')
+            }
+        }
+
+        stage('Destroy') {
+            when {
+                equals expected: true, actual: params.destroy
+            }
+            steps {
+                sh 'pwd; ls -la'
+                sh('terraform -chdir=DevOpsCode/Terraform destroy --auto-approve')
+            }
+        }
+    }
+}
