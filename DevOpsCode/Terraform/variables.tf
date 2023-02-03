@@ -32,7 +32,7 @@ variable "common_tag" {
   type = map
   default = {
     Owner = "Danylo Bosenko"
-    Project = "Demo"
+    Project = "Final-Task"
     Environment = "DEV"
   }
 }

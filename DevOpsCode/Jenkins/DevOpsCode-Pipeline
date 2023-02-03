@@ -67,7 +67,7 @@ pipeline {
             }
 
             steps { 
-                sh("terraform -chdir=DevOpsCode/Terraform apply  -input=false -var 'current_version=$BUILD_DISPLAY_NAME' -var 'common_tag["Environment"]=$environment' --auto-approve")
+                sh("terraform -chdir=DevOpsCode/Terraform apply  -input=false -var 'current_version=$BUILD_DISPLAY_NAME' -var ''common_tag={Environment=$environment}' --auto-approve")
             }
         }
 
