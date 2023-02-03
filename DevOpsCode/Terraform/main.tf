@@ -52,7 +52,7 @@ resource "aws_instance" "db" {
 
 
 resource "aws_security_group" "db" {
-  name        = "${var.current_version} security group DB -${var.current_environment} "
+  name        = "${var.current_version} security group DB -${var.current_environment}"
   description = "SecurityGroup for db Dev "
   
   dynamic "ingress" {
