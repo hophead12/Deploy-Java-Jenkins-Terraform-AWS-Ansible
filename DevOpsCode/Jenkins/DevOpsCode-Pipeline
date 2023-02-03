@@ -46,7 +46,7 @@ pipeline {
                 }
             }
             steps {
-                sh("terraform -chdir=DevOpsCode/Terraform plan -out tfplan -var 'current_version=$BUILD_DISPLAY_NAME' -var 'common_tag={Environment=$environment}' -no-color")
+                sh("terraform -chdir=DevOpsCode/Terraform plan -out tfplan -var 'current_build=$BUILD_DISPLAY_NAME' -var 'common_tag={Environment=$environment}' -no-color")
                 sh("terraform -chdir=DevOpsCode/Terraform show -no-color tfplan > tfplan.txt")
                 script {
                     def plan = readFile 'tfplan.txt'
@@ -65,7 +65,7 @@ pipeline {
             }
 
             steps { 
-                sh("terraform -chdir=DevOpsCode/Terraform apply  -input=false -var 'current_version=$BUILD_DISPLAY_NAME' -var 'common_tag={Environment=$environment}' --auto-approve")
+                sh("terraform -chdir=DevOpsCode/Terraform apply  -input=false -var 'current_build=$BUILD_DISPLAY_NAME' -var 'common_tag={Environment='$environment'}' -no-color --auto-approve")
             }
         }
 
