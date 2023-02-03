@@ -22,7 +22,7 @@ resource "aws_instance" "web" {
     ami                    = data.aws_ami.latest_ubuntu.id
     instance_type          = var.instance_type
     vpc_security_group_ids = [aws_security_group.web.id]
-    tags                   = merge(var.common_tag, {Name = "Web-${var.current_environment}-${var.current_version}-${var.current_build}"})
+    tags                   = merge(var.common_tag, var.current_environment, {Name = "Web-${var.current_environment}-${var.current_version}-${var.current_build}"})
     availability_zone      = data.aws_availability_zones.availability.names[0]
     key_name               = aws_key_pair.generated_key_web.key_name
     
@@ -39,7 +39,7 @@ resource "aws_instance" "db" {
     ami                    = data.aws_ami.latest_aws_linux.id
     instance_type          = var.instance_type
     vpc_security_group_ids = [aws_security_group.db.id]
-    tags                   = merge(var.common_tag, {Name = "DB-${var.current_environment}-${var.current_version}-${var.current_build}"})
+    tags                   = merge(var.common_tag, var.current_environment, {Name = "DB-${var.current_environment}-${var.current_version}-${var.current_build}"})
     availability_zone      = data.aws_availability_zones.availability.names[1] 
     key_name               = aws_key_pair.generated_key_db.key_name
   
@@ -74,6 +74,7 @@ resource "aws_security_group" "db" {
 
   tags = {
     Name = "Allow 3306,ssh"
+    
   }
 }
 
