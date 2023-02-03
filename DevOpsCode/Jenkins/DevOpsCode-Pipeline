@@ -13,9 +13,7 @@ pipeline {
         AWS_SECRET_ACCESS_KEY   =   credentials('secret_key_aws')
     }
     agent any
-   tools {
-        terraform 'Final-Task'
-    }
+    
     stages {
         stage('Checkout SCM') {
           steps {
