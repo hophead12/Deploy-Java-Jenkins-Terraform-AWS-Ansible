@@ -30,6 +30,10 @@ variable "current_build" {
   description = "current build"
   default = "0"
 }
+variable "current_environment" {
+  description = "current env"
+  default = "env"
+}
 
 variable "common_tag" {
   description = "Common Tags to apply to all resources"
@@ -37,6 +41,5 @@ variable "common_tag" {
   default = {
     Owner = "Danylo Bosenko"
     Project = "Final-Task"
-    Environment = "DEV"
   }
 }
