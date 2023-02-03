@@ -52,7 +52,7 @@ pipeline {
                 }
             }
             steps { 
-                sh('terraform -chdir=DevOpsCode/Terraform apply -var 'current_version=$version' --auto-approve')
+                sh("terraform -chdir=DevOpsCode/Terraform apply -var 'current_version=$version' --auto-approve")
             }
         }
 
