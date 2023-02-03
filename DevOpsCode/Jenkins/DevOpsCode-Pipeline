@@ -49,7 +49,7 @@ pipeline {
             }
             steps {
                 sh("terraform -chdir=DevOpsCode/Terraform plan -out tfplan -var 'current_version=$BUILD_DISPLAY_NAME' -var 'common_tag={Environment=$environment}' -no-color")
-                sh 'terraform -chdir=DevOpsCode/Terraform show -no-color tfplan > tfplan.txt'
+                sh("terraform -chdir=DevOpsCode/Terraform show -no-color tfplan > tfplan.txt")
                 script {
                     def plan = readFile 'tfplan.txt'
                     input message: "Do you want to apply the plan?",
@@ -76,7 +76,6 @@ pipeline {
                 equals expected: true, actual: params.destroy
             }
             steps {
-                sh 'pwd; ls -la'
                 sh('terraform -chdir=DevOpsCode/Terraform destroy --auto-approve')
             }
         }

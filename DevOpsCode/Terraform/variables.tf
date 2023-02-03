@@ -26,6 +26,10 @@ variable "current_version" {
   description = "current version"
   default = "V1"
 }
+variable "current_build" {
+  description = "current build"
+  default = "0"
+}
 
 variable "common_tag" {
   description = "Common Tags to apply to all resources"
