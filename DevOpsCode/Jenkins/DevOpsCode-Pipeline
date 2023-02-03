@@ -26,14 +26,6 @@ pipeline {
              ])
            }
         }
-        stage('Git Checkout') {
-            steps { 
-                
-                git branch: '$environment', credentialsId: 'git-final-task', url: 'git@github.com:hopead12/Final-Task.git'
-                
-                
-            }
-        }
         stage('Terraform init') {
             steps {
                 sh('terraform -chdir=DevOpsCode/Terraform init')
