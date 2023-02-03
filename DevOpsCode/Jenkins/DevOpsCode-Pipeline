@@ -4,7 +4,7 @@ properties([pipelineTriggers([githubPush()])])
 pipeline {
     parameters {
         string(name: 'environment', defaultValue: 'dev', description: 'Branch')
-        string(name: 'version', defaultValue: '', description: 'Version variable to pass to Terraform')
+        
         booleanParam(name: 'autoApprove', defaultValue: true, description: 'Automatically run apply after generating plan?')
         booleanParam(name: 'destroy', defaultValue: false, description: 'Destroy Terraform build?')
 
@@ -38,9 +38,6 @@ pipeline {
         }
         stage('Terraform init') {
             steps {
-                script {
-                    currentBuild.displayName = params.version
-                } 
                 sh('terraform -chdir=DevOpsCode/Terraform init')
             }
         }
@@ -52,7 +49,7 @@ pipeline {
                 }
             }
             steps { 
-                sh("terraform -chdir=DevOpsCode/Terraform apply -var 'current_version=$version' --auto-approve")
+                sh("terraform -chdir=DevOpsCode/Terraform apply -var 'current_version=$BUILD_DISPLAY_NAME' --auto-approve")
             }
         }
 
