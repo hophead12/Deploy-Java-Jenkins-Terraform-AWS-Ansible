@@ -2,17 +2,31 @@ properties([pipelineTriggers([githubPush()])])
 
 
 pipeline {
-
-    agent any
+parameters {
+        string(name: 'environment', defaultValue: 'dev', description: 'Branch')
+        string(name: 'workspace', Value: 'Petclinic', description: 'folder')
+    
+    }
+    agent { dockerfile true }
     
     stages {
-
+       stage('Checkout SCM') {
+          steps {
+            checkout([
+              $class: 'GitSCM',
+              branches: [[name: '$environment']],
+              userRemoteConfigs: [[
+                credentialsId: 'git-final-task', 
+                url: 'git@github.com:hopead12/Final-Task.git'
+              ]]
+             ])
+           }
+        }
         stage('Build') {
             steps {
-                sh '''
-                    pwd
-                    ls -l
-                '''
+                dir('$workspace') {
+                    sh "pwd"
+                }
             }
            
         }
