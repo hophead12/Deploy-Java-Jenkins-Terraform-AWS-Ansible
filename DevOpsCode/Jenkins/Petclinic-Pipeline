@@ -24,7 +24,7 @@ parameters {
         }
         stage('Build') {
             steps {
-                dir('$workspace') {
+                dir("${workspace}") {
                     sh "pwd"
                 }
             }
