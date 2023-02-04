@@ -2,8 +2,6 @@ properties([pipelineTriggers([githubPush()])])
 
 
 pipeline {
-    parameters {
-    }
 
     agent any
     
