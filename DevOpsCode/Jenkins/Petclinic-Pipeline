@@ -1,0 +1,23 @@
+properties([pipelineTriggers([githubPush()])])
+
+
+pipeline {
+    parameters {
+    }
+
+    agent any
+    
+    stages {
+
+        stage('Build') {
+            steps {
+                sh '''
+                    pwd
+                    ls -l
+                '''
+            }
+           
+        }
+    }
+}
+        
