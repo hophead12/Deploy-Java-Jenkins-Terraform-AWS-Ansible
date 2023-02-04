@@ -4,7 +4,7 @@ properties([pipelineTriggers([githubPush()])])
 pipeline {
 parameters {
         string(name: 'environment', defaultValue: 'dev', description: 'Branch')
-        string(name: 'workspace', Value: 'Petclinic', description: 'folder')
+        string(name: 'workspace', defaultValue: 'Petclinic', description: 'folder')
     
     }
     agent { dockerfile true }
