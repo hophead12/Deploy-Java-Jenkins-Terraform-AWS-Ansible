@@ -7,7 +7,7 @@ parameters {
         string(name: 'workspace', defaultValue: 'Petclinic', description: 'folder')
     
     }
-    agent { dockerfile true }
+    agent any
     
     stages {
        stage('Checkout SCM') {
