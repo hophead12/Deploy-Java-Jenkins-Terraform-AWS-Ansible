@@ -7,13 +7,14 @@ parameters {
         string(name: 'workspace', defaultValue: 'Petclinic', description: 'Folder')
         string(name: 'version', defaultValue: '1', description: 'Version')
     }
+    
     agent {
         node {
             label 'build-server'
         }
     }
     tools {
-        DockerTool 'Docker latest'
+        dockerTool 'Docker latest'
     }
     stages {
         stage('Build') {
