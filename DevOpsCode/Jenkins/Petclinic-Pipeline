@@ -36,7 +36,9 @@ parameters {
         stage('Create image'){
             steps{
                  dir("${workspace}") {
-                    sh 'docker build -t petclinic:${version} .'
+                    sh('docker')
+                    
+                    sh('docker build -t petclinic:${version} .')
                     sh 'docker images'
                 }   
             }
