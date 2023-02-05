@@ -25,6 +25,7 @@ parameters {
         stage('Build') {
             steps {
                 dir("${workspace}") {
+                    sh 'chmod o+x mvnw'
                     sh './mvnw package'
                 }
             }
