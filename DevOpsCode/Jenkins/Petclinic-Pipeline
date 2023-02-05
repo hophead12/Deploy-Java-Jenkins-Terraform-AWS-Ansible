@@ -9,7 +9,7 @@ parameters {
     }
     agent {
         node {
-            label 'buils-server'
+            label 'build-server'
         }
     }
     
