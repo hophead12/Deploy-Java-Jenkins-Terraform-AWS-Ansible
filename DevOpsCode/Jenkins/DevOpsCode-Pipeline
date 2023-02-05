@@ -14,18 +14,6 @@ pipeline {
     agent any
     
     stages {
-        stage('Checkout SCM') {
-          steps {
-            checkout([
-              $class: 'GitSCM',
-              branches: [[name: '$environment']],
-              userRemoteConfigs: [[
-                credentialsId: 'git-final-task', 
-                url: 'git@github.com:hopead12/Final-Task.git'
-              ]]
-             ])
-           }
-        }
         stage('Terraform init') {
             steps {
                 sh('terraform -chdir=DevOpsCode/Terraform init')

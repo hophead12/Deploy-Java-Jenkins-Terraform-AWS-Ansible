@@ -12,7 +12,9 @@ parameters {
             label 'build-server'
         }
     }
-    
+    tools {
+        DockerTool 'Docker latest'
+    }
     stages {
         stage('Build') {
             steps {
