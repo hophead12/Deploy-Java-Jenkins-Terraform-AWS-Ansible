@@ -4,8 +4,8 @@ properties([pipelineTriggers([githubPush()])])
 pipeline {
 parameters {
         string(name: 'environment', defaultValue: 'dev', description: 'Branch')
-        string(name: 'workspace', defaultValue: 'Petclinic', description: 'folder')
-    
+        string(name: 'workspace', defaultValue: 'Petclinic', description: 'Folder')
+        string(name: 'version', defaultValue: '1', description: 'Version')
     }
     agent any
     
@@ -25,10 +25,25 @@ parameters {
         stage('Build') {
             steps {
                 dir("${workspace}") {
-                    sh "pwd"
+                    sh './mvnw package'
                 }
             }
-           
+        }
+        stage('Test'){
+            steps {
+                 dir("${workspace}") {
+                    sh './mvnw test'
+                }
+            }
+        
+        }
+        stage('Create image'){
+            steps{
+                 dir("${workspace}") {
+                    sh 'docker build -t petclinic:${version}.${$BUILD_DISPLAY_NAME} .'
+                    sh 'docker images'
+                }   
+            }
         }
     }
 }
