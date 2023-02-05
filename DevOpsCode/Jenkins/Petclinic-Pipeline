@@ -21,14 +21,14 @@ parameters {
             steps {
                 dir("${workspace}") {
                     sh 'chmod +x mvnw'
-                    sh './mvnw package'
+                    sh './mvnw -q package '
                 }
             }
         }
         stage('Test'){
             steps {
                  dir("${workspace}") {
-                    sh './mvnw test'
+                    sh './mvnw -q test'
                 }
             }
         
@@ -47,7 +47,7 @@ parameters {
             steps{
                  dir("${workspace}") {
 
-                    sh('echo "$DOCKER_PASS" | docker login -u $DOCKER_USER --password --password-stdin .')
+                    sh("echo "$DOCKER_PASS" | docker login -u $DOCKER_USER --password-stdin .")
                     sh('docker push reinz12/petclinic')
                 }   
             }
