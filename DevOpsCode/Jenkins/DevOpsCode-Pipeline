@@ -49,13 +49,6 @@ pipeline {
                 sh("terraform -chdir=DevOpsCode/Terraform apply  -input=false -var 'current_build=$BUILD_DISPLAY_NAME' -var 'current_environment=$environment' -no-color --auto-approve")
             }
         }
-        stage('Ansible'){
-            when {
-                not {
-                    equals expected: true, actual: params.destroy
-                }
-            }
-        }
 
         stage('Destroy') {
             when {
