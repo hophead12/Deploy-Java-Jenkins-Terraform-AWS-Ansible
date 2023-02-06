@@ -7,9 +7,15 @@ resource "aws_vpc" "main" {
 }
 
 resource "aws_internet_gateway" "gw" {
-
+  vpc_id = aws_vpc.main.id
   tags = merge(var.common_tag, {Name = "GateWay-Petclinic-${var.current_environment}-${var.current_version}"})
 
+}
+
+
+resource "aws_main_route_table_association" "main" {
+  vpc_id = aws_vpc.main.id
+  route_table_id = aws_route_table.route.id
 }
 
 resource "aws_route_table" "route" {
@@ -52,4 +58,8 @@ resource "aws_db_subnet_group" "main" {
   name            = "main"
   subnet_ids      = [aws_subnet.main.id, aws_subnet.main2.id]
   tags            = merge(var.common_tag, {Name = "DB-SubnetGroup-Petclinic-${var.current_environment}-${var.current_version}"})
+  depends_on = [
+    aws_subnet.main,
+    aws_subnet.main2
+  ]
 }
