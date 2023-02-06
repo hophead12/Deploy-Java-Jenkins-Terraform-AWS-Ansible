@@ -18,9 +18,6 @@ resource "aws_route_table" "route" {
     cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.gw.id
   }
-  route {
-    cidr_block = "10.0.0.0/24"
-  }
   tags = merge(var.common_tag, {Name = "Route-Petclinic-${var.current_environment}-${var.current_version}"})
 }
 resource "aws_subnet" "main" {
