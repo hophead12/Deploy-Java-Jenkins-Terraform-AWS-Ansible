@@ -24,6 +24,7 @@ pipeline {
                 not {
                     equals expected: true, actual: params.autoApprove
                 }
+                equals expected: true, actual: params.destroy
             }
             steps {
                 sh("terraform -chdir=DevOpsCode/Terraform plan -out tfplan -var 'current_build=$BUILD_DISPLAY_NAME' -var 'current_environment=$environment' -no-color")
@@ -46,6 +47,13 @@ pipeline {
 
             steps { 
                 sh("terraform -chdir=DevOpsCode/Terraform apply  -input=false -var 'current_build=$BUILD_DISPLAY_NAME' -var 'current_environment=$environment' -no-color --auto-approve")
+            }
+        }
+        stage('Ansible'){
+            when {
+                not {
+                    equals expected: true, actual: params.destroy
+                }
             }
         }
 
