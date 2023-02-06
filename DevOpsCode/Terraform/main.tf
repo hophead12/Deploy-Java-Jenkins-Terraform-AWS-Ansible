@@ -35,19 +35,39 @@ resource "aws_instance" "web" {
   ]
 }
 
-resource "aws_instance" "db" {
-    ami                    = data.aws_ami.latest_aws_linux.id
-    instance_type          = var.instance_type
-    vpc_security_group_ids = [aws_security_group.db.id]
-    tags                   = merge(var.common_tag, {Name = "DB-${var.current_environment}-${var.current_version}-${var.current_build}"})
-    availability_zone      = data.aws_availability_zones.availability.names[1] 
-    key_name               = aws_key_pair.generated_key_db.key_name
-  
-  
-  lifecycle {
-  #prevent_destroy = true # the server will not be destroyed 
-  }
+
+resource "aws_db_instance" "default" {
+  allocated_storage       = 10
+  db_name                 = "mydb"
+  engine                  = "mysql"
+  engine_version          = "5.7"
+  instance_class          = var.instance_type
+  dbname                  = "petclinic"
+  username                = "petclinic"
+  password                = "petclinic"
+  parameter_group_name    = "default.mysql5.7"
+  skip_final_snapshot     = true
+
+  enabled                 = true
+  vpc_security_group_ids  = [aws_security_group.db.id]
+  availability_zone       = data.aws_availability_zones.availability.names[1]
+  tags                    = merge(var.common_tag, {Name = "DB-${var.current_environment}-${var.current_version}-${var.current_build}"})
 }
+
+
+#resource "aws_instance" "db" {
+#    ami                    = data.aws_ami.latest_aws_linux.id
+#    instance_type          = var.instance_type
+#    vpc_security_group_ids = [aws_security_group.db.id]
+#    tags                   = merge(var.common_tag, {Name = "DB-${var.current_environment}-${var.current_version}-${var.current_build}"})
+#    availability_zone      = data.aws_availability_zones.availability.names[1] 
+#    key_name               = aws_key_pair.generated_key_db.key_name
+#  
+#  
+#  lifecycle {
+#  #prevent_destroy = true # the server will not be destroyed 
+#  }
+#}
 
 
 
