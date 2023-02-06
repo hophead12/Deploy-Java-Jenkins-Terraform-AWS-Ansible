@@ -7,7 +7,6 @@ resource "aws_vpc" "main" {
 }
 
 resource "aws_internet_gateway" "gw" {
-  vpc_id    =   aws_vpc.main.id
   
   tags = merge(var.common_tag, {Name = "GateWay-Petclinic-${var.current_environment}-${var.current_version}"})
 }
