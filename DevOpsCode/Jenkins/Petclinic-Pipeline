@@ -46,7 +46,7 @@ parameters {
         stage('Push'){
             steps{
                  dir("${workspace}") {
-                    def username = $DOCKER_PASS
+                    sh 'echo $DOCKER_USER ${$DOCKER_USER} $NAME_SSH_KEY ${NAME_SSH_KEY}'
                     sh('echo ${username} | docker login -u $DOCKER_USER --password-stdin .')
                     sh('docker push reinz12/petclinic')
                 }   
