@@ -44,9 +44,24 @@ pipeline {
                     equals expected: true, actual: params.destroy
                 }
             }
-
             steps { 
                 sh("terraform -chdir=DevOpsCode/Terraform apply  -input=false -var 'current_build=$BUILD_DISPLAY_NAME' -var 'current_environment=$environment' -no-color --auto-approve")
+            }
+        }
+
+        stage('Ansible') {
+            when {
+                not {
+                    equals expected: true, actual: params.destroy
+                }
+            }
+            steps {
+                script {
+                    WEB_IP = sh(script: 'terraform -chdir=DevOpsCode/Terraform output Webserver_public_ip_address', returnStdout: true).trim()
+                    DB_IP = sh(script: 'terraform -chdir=DevOpsCode/Terraform output DBserver_public_ip_address', returnStdout: true).trim()
+                    NAME_SSH_KEY = sh(script: 'terraform -chdir=DevOpsCode/Terraform output key_name_web', returnStdout: true).trim()
+                }
+                sh("terraform -chdir=DevOpsCode/Terraform output -raw private_key_web > ~/.ssh/$NAME_SSH_KEY")
             }
         }
 
