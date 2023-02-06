@@ -1,6 +1,6 @@
 resource "aws_vpc" "main" {
     cidr_block = "10.0.0.0/24"
-    default_route_table_id  = aws_route_table.route.id
+    
     instance_tenancy = "default"
     enable_dns_hostnames = true
     tags = merge(var.common_tag, {Name = "VPC-Petclinic-${var.current_environment}-${var.current_version}"})
