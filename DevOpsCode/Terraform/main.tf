@@ -44,7 +44,7 @@ resource "aws_db_instance" "db" {
   vpc_security_group_ids  = [aws_security_group.db.id]
   availability_zone       = data.aws_availability_zones.availability.names[1]
   tags                    = "DB-${var.current_environment}-${var.current_version}-${var.current_build}"
-
+}
 
 #resource "aws_instance" "db" {
 #    ami                    = data.aws_ami.latest_aws_linux.id
