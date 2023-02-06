@@ -10,13 +10,6 @@ resource "aws_eip" "web"{
   tags     = merge(var.common_tag, {Name = "Server IP web-${var.current_environment}"})
 }
 
-resource "aws_eip" "db"{
-
-  instance = aws_instance.db.id     # Create elastic IP in aws and attach it on instance db
-  tags     = merge(var.common_tag, {Name = "Server IP db-${var.current_environment}"})
-}
-
-
 
 resource "aws_instance" "web" {
     ami                    = data.aws_ami.latest_ubuntu.id
@@ -31,24 +24,23 @@ resource "aws_instance" "web" {
   }
 
   depends_on = [
-    aws_instance.db
+    aws_db_instance.db
   ]
 }
 
 
-resource "aws_db_instance" "default" {
+resource "aws_db_instance" "db" {
   allocated_storage       = 10
   db_name                 = "mydb"
   engine                  = "mysql"
   engine_version          = "5.7"
   instance_class          = var.instance_type
-  dbname                  = "petclinic"
+  dbname                  = "petclinic12"
   username                = "petclinic"
   password                = "petclinic"
   parameter_group_name    = "default.mysql5.7"
   skip_final_snapshot     = true
 
-  enabled                 = true
   vpc_security_group_ids  = [aws_security_group.db.id]
   availability_zone       = data.aws_availability_zones.availability.names[1]
   tags                    = merge(var.common_tag, {Name = "DB-${var.current_environment}-${var.current_version}-${var.current_build}"})
