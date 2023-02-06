@@ -7,7 +7,7 @@ output "Webserver_public_ip_address" {
   value = aws_eip.web.public_ip
 }
 output "DBserver_public_ip_address" {
-  value = aws_eip.db.public_ip
+  value = aws_db_instance.db.endpoint
 }
 output "webserver_sg_id_web" {
   value = aws_security_group.web.id
@@ -15,18 +15,6 @@ output "webserver_sg_id_web" {
 
 output "webserver_sg_id_db" {
   value = aws_security_group.db.id
-}
-
-
-
-output "private_key_db" {
-  value     = tls_private_key.db.private_key_pem
-  sensitive = true
-}
-
-output "key_name_db" {
-  value     = aws_key_pair.generated_key_db.key_name
-  
 }
 
 

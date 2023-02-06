@@ -35,7 +35,7 @@ resource "aws_db_instance" "db" {
   engine                  = "mysql"
   engine_version          = "5.7"
   instance_class          = var.instance_type
-  dbname                  = "petclinic12"
+
   username                = "petclinic"
   password                = "petclinic"
   parameter_group_name    = "default.mysql5.7"
