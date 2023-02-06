@@ -36,9 +36,7 @@ parameters {
         stage('Create image'){
             steps{
                  dir("${workspace}") {
-                    sh('docker')
-
-                    sh('docker build -t petclinic:${version} .')
+                    sh('docker build -t ${DOCKER_USER}/petclinic:${version} .')
                     sh 'docker images'
                 }   
             }
@@ -47,7 +45,8 @@ parameters {
             steps{
                  dir("${workspace}") {
                     sh('echo ${DOCKER_PASS} | docker login --username ${DOCKER_USER} --password-stdin')
-                    sh('docker push petclinic:${version}')
+                    sh('docker push ${DOCKER_USER}/petclinic:${version}')   
+
                 }   
             }   
         }
