@@ -9,9 +9,7 @@ resource "aws_vpc" "main" {
 resource "aws_internet_gateway" "gw" {
 
   tags = merge(var.common_tag, {Name = "GateWay-Petclinic-${var.current_environment}-${var.current_version}"})
-  depends_on = [
-    aws_vpc.main
-  ]
+
 }
 
 resource "aws_route_table" "route" {
@@ -22,9 +20,7 @@ resource "aws_route_table" "route" {
     gateway_id = aws_internet_gateway.gw.id
   }
   tags = merge(var.common_tag, {Name = "Route-Petclinic-${var.current_environment}-${var.current_version}"})
-  depends_on = [
-    aws_internet_gateway.gw
-  ]
+ 
 }
 resource "aws_subnet" "main" {
   vpc_id = aws_vpc.main.id
