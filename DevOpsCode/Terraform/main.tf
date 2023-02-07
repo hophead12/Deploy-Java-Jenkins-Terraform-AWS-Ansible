@@ -49,7 +49,7 @@ resource "aws_db_instance" "db" {
   #publicly_accessible     = true
 
   db_name                 = "petclinic"
-  username                = "petclinic"
+  username                = "petclinic" # CHANGE!!!!!!!!!!!!!!!!!
   password                = "petclinic"
 
 

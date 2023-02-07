@@ -1,0 +1,29 @@
+---
+- name: Install docker to instances, pull image and run app 
+  hosts: "{{ tags_hosts }}"
+  become: yes
+
+  vars:
+   repository: "{{ repo }}"
+   version: "{{ version }}"
+   DB_ip: "{{ endpoint_db }}"
+
+  tasks:
+  - name: update/upgrade system
+    shell: apt-get -y update && apt-get -y upgrade
+
+  - name: install docker
+    shell: apt-get -y install docker.io
+
+  - name: docker
+    shell: docker run hello-world
+
+  - set_fact: registry="{{ repository }}:{{ version }}"
+
+  - name: pull images from docker hub
+    shell: docker pull {{ registry }}
+
+
+
+  - name: docker run app
+    shell: docker run -d -e DATABASE_IP={{ DB_ip }} -p 80:8080 {{ registry }} 

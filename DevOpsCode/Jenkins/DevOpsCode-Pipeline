@@ -4,6 +4,7 @@ properties([pipelineTriggers([githubPush()])])
 pipeline {
     parameters {
         string(name: 'environment', defaultValue: 'dev', description: 'Branch')
+        string(name: 'version', defaultValue: '1', description: 'Version')
         booleanParam(name: 'autoApprove', defaultValue: true, description: 'Automatically run apply after generating plan?')
         booleanParam(name: 'destroy', defaultValue: false, description: 'Destroy Terraform build?')
     }
@@ -57,11 +58,15 @@ pipeline {
             }
             steps {
                 script {
-                    WEB_IP = sh(script: 'terraform -chdir=DevOpsCode/Terraform output Webserver_public_ip_address', returnStdout: true).trim()
-                    DB_IP = sh(script: 'terraform -chdir=DevOpsCode/Terraform output DBserver_public_ip_address', returnStdout: true).trim()
+                    DB_ENDPOINT = sh(script: 'terraform -chdir=DevOpsCode/Terraform output DBserver_public_ip_address', returnStdout: true).trim()
                     NAME_SSH_KEY = sh(script: 'terraform -chdir=DevOpsCode/Terraform output key_name_web', returnStdout: true).trim()
+                    REPO         = reinz12/petclinic
                 }
                 sh("terraform -chdir=DevOpsCode/Terraform output -raw private_key_web > ~/.ssh/$NAME_SSH_KEY")
+                dir("DevOpsCode/Ansible"){
+                    sh("ansible-playbook -i ec2.py playbookdocker.yml --extra-vars \"tags_hosts='tag_Name_Web_$environment*' repo=$REPO version=$version endpoint_db=$DB_ENDPOINT ansible_ssh_private_key_file=~/.ssh/$NAME_SSH_KEY\"")
+                }
+
             }
         }
 
