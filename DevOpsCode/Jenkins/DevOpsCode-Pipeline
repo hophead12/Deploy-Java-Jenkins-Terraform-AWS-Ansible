@@ -60,7 +60,7 @@ pipeline {
                 script {
                     DB_ENDPOINT = sh(script: 'terraform -chdir=DevOpsCode/Terraform output DBserver_public_ip_address', returnStdout: true).trim()
                     NAME_SSH_KEY = sh(script: 'terraform -chdir=DevOpsCode/Terraform output key_name_web', returnStdout: true).trim()
-                    REPO         = reinz12/petclinic
+                    REPO         = "reinz12/petclinic"
                 }
                 sh("terraform -chdir=DevOpsCode/Terraform output -raw private_key_web > ~/.ssh/$NAME_SSH_KEY")
                 dir("DevOpsCode/Ansible"){
