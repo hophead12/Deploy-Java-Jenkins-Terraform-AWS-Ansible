@@ -47,7 +47,8 @@ pipeline {
             }
         }
 
-        stage('Ansible') {
+        stage('Deploy') {
+            
             when {
                 not {
                     equals expected: true, actual: params.destroy
@@ -62,9 +63,13 @@ pipeline {
                 sh("terraform -chdir=DevOpsCode/Terraform output -raw private_key_web > ~/.ssh/$NAME_SSH_KEY ; chmod 0600 ~/.ssh/$NAME_SSH_KEY")
                 dir("DevOpsCode/Ansible"){
                     sh('chmod +x ec2.py')
-                    sh("ansible-playbook -i ec2.py playbookdocker.yml --extra-vars \"tags_hosts=tag_Name_Web_$environment* repo=$REPO version=$version endpoint_db=$DB_ENDPOINT ansible_ssh_private_key_file=~/.ssh/$NAME_SSH_KEY\"")
+                    sh("ansible-playbook -i ec2.py playbookdocker.yml --extra-vars \"tags_hosts=tag_Name_Web_$environment* repo=$REPO version=$BUILD_DISPLAY_NAME endpoint_db=$DB_ENDPOINT ansible_ssh_private_key_file=~/.ssh/$NAME_SSH_KEY\"")
                 }
-
+            }
+            post {
+                success {
+                    build propagate: false, job: 'Petclinic-Pipeline'
+                }
             }
         }
 

@@ -35,9 +35,8 @@ parameters {
         }
         stage('Create image'){
             steps{
-                build job: 'DevOpsCode-Pipeline', propagate: true, wait: false
                  dir("${workspace}") {
-                    sh('docker build -t ${DOCKER_USER}/petclinic:${version} .')
+                    sh('docker build -t ${DOCKER_USER}/petclinic:${BUILD_DISPLAY_NAME} .')
                     sh 'docker images'
                 }   
             }
@@ -46,7 +45,7 @@ parameters {
             steps{
                  dir("${workspace}") {
                     sh('echo ${DOCKER_PASS} | docker login --username ${DOCKER_USER} --password-stdin')
-                    sh('docker push ${DOCKER_USER}/petclinic:${version}')   
+                    sh('docker push ${DOCKER_USER}/petclinic:${BUILD_DISPLAY_NAME}')   
 
                 }   
             }   
