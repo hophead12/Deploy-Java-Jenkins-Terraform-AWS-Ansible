@@ -45,7 +45,7 @@ parameters {
             steps{
                  dir("${workspace}") {
                     sh('echo ${DOCKER_PASS} | docker login --username ${DOCKER_USER} --password-stdin')
-                    sh('docker push ${DOCKER_USER}/petclinic:${BUILD_DISPLAY_NAME}')   
+                    sh('docker push ${DOCKER_USER}/petclinic:${BUILD_NUMBER}')   
 
                 }   
             }   

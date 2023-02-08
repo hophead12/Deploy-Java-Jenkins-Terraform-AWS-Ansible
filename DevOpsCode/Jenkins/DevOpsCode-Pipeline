@@ -25,7 +25,7 @@ pipeline {
                 equals expected: true, actual: params.destroy
             }
             steps {
-                sh("terraform -chdir=DevOpsCode/Terraform plan -out tfplan -var 'current_build=$BUILD_DISPLAY_NAME' -var 'current_environment=$environment' -no-color")
+                sh("terraform -chdir=DevOpsCode/Terraform plan -out tfplan -var 'current_build=$BUILD_NUMBER' -var 'current_environment=$environment' -no-color")
                 sh("terraform -chdir=DevOpsCode/Terraform show -no-color tfplan > tfplan.txt")
                 script {
                     def plan = readFile 'tfplan.txt'
@@ -43,7 +43,7 @@ pipeline {
                 }
             }
             steps { 
-                sh("terraform -chdir=DevOpsCode/Terraform apply  -input=false -var 'current_build=$BUILD_DISPLAY_NAME' -var 'current_environment=$environment' -no-color --auto-approve")
+                sh("terraform -chdir=DevOpsCode/Terraform apply  -input=false -var 'current_build=$BUILD_NUMBER' -var 'current_environment=$environment' -no-color --auto-approve")
             }
         }
 
@@ -63,7 +63,7 @@ pipeline {
                 sh("terraform -chdir=DevOpsCode/Terraform output -raw private_key_web > ~/.ssh/$NAME_SSH_KEY ; chmod 0600 ~/.ssh/$NAME_SSH_KEY")
                 dir("DevOpsCode/Ansible"){
                     sh('chmod +x ec2.py')
-                    sh("ansible-playbook -i ec2.py playbookdocker.yml --extra-vars \"tags_hosts=tag_Name_Web_$environment* repo=$REPO version=$BUILD_DISPLAY_NAME endpoint_db=$DB_ENDPOINT ansible_ssh_private_key_file=~/.ssh/$NAME_SSH_KEY\"")
+                    sh("ansible-playbook -i ec2.py playbookdocker.yml --extra-vars \"tags_hosts=tag_Name_Web_$environment* repo=$REPO version=$BUILD_NUMBER endpoint_db=$DB_ENDPOINT ansible_ssh_private_key_file=~/.ssh/$NAME_SSH_KEY\"")
                 }
             }
             post {
