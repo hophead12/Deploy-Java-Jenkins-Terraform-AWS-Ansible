@@ -41,7 +41,6 @@ import jakarta.validation.constraints.NotEmpty;
  * @author Sam Brannen
  * @author Michael Isvy
  * @author Oliver Drotbohm
- * @author DevOps Test
  */
 @Entity
 @Table(name = "owners")
