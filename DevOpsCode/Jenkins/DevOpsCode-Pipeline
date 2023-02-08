@@ -27,7 +27,7 @@ pipeline {
             }
             steps {
                 sh('terraform -chdir=DevOpsCode/Terraform init')
-                sh('terraform -chdir=DevOpsCode/Terraform plan -out tfplan -var current_build=$BUILD_NUMBER -var current_environment=$environment -var usernamedb=$MYSQL_USER -var passworddb=$MYSQL_PASS -no-color')
+                sh('terraform -chdir=DevOpsCode/Terraform plan -out tfplan -var current_build=$BUILD_NUMBER -var current_version=$version -var current_environment=$environment -var usernamedb=$MYSQL_USER -var passworddb=$MYSQL_PASS -no-color')
                 sh("terraform -chdir=DevOpsCode/Terraform show -no-color tfplan > tfplan.txt")
                 script {
                     def plan = readFile 'tfplan.txt'

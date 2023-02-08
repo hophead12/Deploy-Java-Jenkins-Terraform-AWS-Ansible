@@ -15,7 +15,7 @@ resource "aws_eip" "web"{
 resource "aws_instance" "web" {
     ami                    = data.aws_ami.latest_ubuntu.id
     instance_type          = var.instance_type
-    tags                   = merge(var.common_tag, {Name = "Web-${var.current_environment}-${var.current_version}.${var.current_build}"})
+    tags                   = merge(var.common_tag, {Name = "Web-${var.current_environment}-V${var.current_version}.${var.current_build}"})
     availability_zone      = data.aws_availability_zones.availability.names[0]
     key_name               = aws_key_pair.generated_key_web.key_name
     
@@ -60,7 +60,7 @@ resource "aws_db_instance" "db" {
 
 
 resource "aws_security_group" "db" {
-  name        = "Security group DB-${var.current_environment}-${var.current_version}"
+  name        = "Security group DB-${var.current_environment}-V${var.current_version}"
   description = "SecurityGroup for db"
   vpc_id      = aws_vpc.main.id
   dynamic "ingress" {
@@ -87,7 +87,7 @@ resource "aws_security_group" "db" {
 
 
 resource "aws_security_group" "web" {
-  name        = "Security group Web-${var.current_environment}-${var.current_version}"
+  name        = "Security group Web-${var.current_environment}-V${var.current_version}"
   description = "SecurityGroup for web"
   vpc_id      = aws_vpc.main.id
   dynamic "ingress" {

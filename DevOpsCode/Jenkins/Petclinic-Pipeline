@@ -23,35 +23,59 @@ parameters {
         }
     }
     stages {
-        stage("Create infrastructure & Build") {
+        stage('Approval') {
+            when {
+                not {
+                    equals expected: true, actual: params.autoApprove
+                }
+                equals expected: true, actual: params.destroy
+            }
+            steps {
+                sh('terraform -chdir=DevOpsCode/Terraform init')
+                sh('terraform -chdir=DevOpsCode/Terraform plan -out tfplan -var current_build=$BUILD_NUMBER -var current_version=$version -var current_environment=$environment -var usernamedb=$MYSQL_USER -var passworddb=$MYSQL_PASS -no-color')
+                sh("terraform -chdir=DevOpsCode/Terraform show -no-color tfplan > tfplan.txt")
+                script {
+                    def plan = readFile 'tfplan.txt'
+                    input message: "Do you want to apply the plan?",
+                        parameters: [text(name: 'Plan', description: 'Please review the plan', defaultValue: plan)]
+                }
+            }
+        }
+        stage("Create Infrastructure & Build") {
+            when {
+                not {
+                    equals expected: true, actual: params.destroy
+                }
+            }
             parallel {
                 stage('Build'){
                     steps {
                         dir("${workspace}") {
-                            sh 'chmod +x mvnw'
-                            sh './mvnw -q package '
+                            sh('chmod +x mvnw')
+                            sh('./mvnw -q package ')
+                            sh('docker build -t ${DOCKER_USER}/petclinic:${BUILD_NUMBER} .')
                         }
                     }
                 }
-                stage('Create infrastructure') {
+                stage('Create Infrastructure') {
                     agent {
                         node {
                             label 'deploy-server'
                         }
                     }
-                    when {
-                        not {
-                            equals expected: true, actual: params.destroy
-                        }
-                    }
                     steps {
                         sh('terraform -chdir=DevOpsCode/Terraform init') 
-                        sh('terraform -chdir=DevOpsCode/Terraform apply  -input=false -var current_build=$BUILD_NUMBER -var current_environment=$environment -var usernamedb=$MYSQL_USER -var passworddb=$MYSQL_PASS -no-color --auto-approve')
+                        sh('terraform -chdir=DevOpsCode/Terraform apply  -input=false -var current_build=$BUILD_NUMBER -var current_version=$version -var current_environment=$environment -var usernamedb=$MYSQL_USER -var passworddb=$MYSQL_PASS -no-color --auto-approve')
                     }
                 }
             }
         }
         stage('Test'){
+            when {
+                not {
+                    equals expected: true, actual: params.destroy
+                }
+            }
             steps {
                  dir("${workspace}") {
                     sh './mvnw -q test'
@@ -59,22 +83,18 @@ parameters {
             }
         
         }
-        stage('Create image'){
-            steps{
-                 dir("${workspace}") {
-                    sh('docker build -t ${DOCKER_USER}/petclinic:${BUILD_NUMBER} .')
-                    sh 'docker images'
-                }   
+        stage('Deliver to DockerHub'){
+            when {
+                not {
+                    equals expected: true, actual: params.destroy
+                }
             }
-        }
-        stage('Push'){
             steps{
                  dir("${workspace}") {
                     sh('echo ${DOCKER_PASS} | docker login --username ${DOCKER_USER} --password-stdin')
-                    sh('docker push ${DOCKER_USER}/petclinic:${BUILD_NUMBER}')   
-
+                    sh('docker push ${DOCKER_USER}/petclinic:${BUILD_NUMBER}')
                 }   
-            }   
+            }
         }
         stage('Deploy') {
             agent {
@@ -89,6 +109,7 @@ parameters {
             }
             steps {
                 script {
+                    IP_ADDRESS = sh(script: 'terraform -chdir=DevOpsCode/Terraform output Webserver_public_ip_address', returnStdout: true).trim()
                     DB_ENDPOINT = sh(script: 'terraform -chdir=DevOpsCode/Terraform output DBserver_public_ip_address', returnStdout: true).trim()
                     NAME_SSH_KEY = sh(script: 'terraform -chdir=DevOpsCode/Terraform output key_name_web', returnStdout: true).trim()
                     REPO         = "reinz12/petclinic"
@@ -97,6 +118,9 @@ parameters {
                 dir("DevOpsCode/Ansible"){
                     sh('chmod +x ec2.py')
                     sh("ansible-playbook -i ec2.py playbookdocker.yml -e tags_hosts=tag_Name_Web_${environment}* -e repo=$REPO -e version=$BUILD_NUMBER -e endpoint_db=$DB_ENDPOINT -e mysql_user=${MYSQL_USER} -e mysql_pass=$MYSQL_PASS -e ansible_ssh_private_key_file=~/.ssh/$NAME_SSH_KEY")
+                }
+                script {
+                    input message: "Please check this address: http://$IP_ADDRESS",
                 }
             }
         }

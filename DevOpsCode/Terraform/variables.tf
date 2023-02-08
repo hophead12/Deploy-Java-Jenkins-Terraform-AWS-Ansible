@@ -24,7 +24,7 @@ variable "allow_ports_db" {
 
 variable "current_version" {
   description = "current version"
-  default = "V1"
+  default = "1"
 }
 variable "current_build" {
   description = "current build"
