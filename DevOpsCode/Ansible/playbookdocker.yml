@@ -24,7 +24,7 @@
     shell: docker pull {{ registry }}
 
   - name: clear stop docker
-    shell: docker stop $(docker ps -q)
+    shell: docker stop $(docker ps -aq)
 
   - name: docker run app
     shell: docker run -d -e DATABASE_IP={{ DB_ip }} -p 80:8080 {{ registry }} 
