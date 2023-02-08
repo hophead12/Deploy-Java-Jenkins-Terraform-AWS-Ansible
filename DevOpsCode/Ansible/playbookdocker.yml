@@ -23,7 +23,8 @@
   - name: pull images from docker hub
     shell: docker pull {{ registry }}
 
-
+  - name: clear stop docker
+    shell: docker stop $(docker ps -q)
 
   - name: docker run app
     shell: docker run -d -e DATABASE_IP={{ DB_ip }} -p 80:8080 {{ registry }} 
