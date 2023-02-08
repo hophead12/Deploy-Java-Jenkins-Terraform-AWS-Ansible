@@ -35,7 +35,7 @@ parameters {
         }
         stage('Create image'){
             steps{
-                build job: 'DevOpsCode-Pipeline', propagete: true, wait: true
+                build job: 'DevOpsCode-Pipeline', propagete: true, wait: false
                  dir("${workspace}") {
                     sh('docker build -t ${DOCKER_USER}/petclinic:${version} .')
                     sh 'docker images'
