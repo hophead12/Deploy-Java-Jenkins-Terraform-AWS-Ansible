@@ -36,7 +36,7 @@ parameters {
         stage('Create image'){
             steps{
                  dir("${workspace}") {
-                    sh('docker build -t ${DOCKER_USER}/petclinic:${BUILD_DISPLAY_NAME} .')
+                    sh('docker build -t ${DOCKER_USER}/petclinic:${BUILD_NUMBER} .')
                     sh 'docker images'
                 }   
             }
