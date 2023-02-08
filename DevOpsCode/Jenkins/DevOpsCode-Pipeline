@@ -18,11 +18,6 @@ pipeline {
     }
     
     stages {
-        stage('Terraform init') {
-            steps {
-                sh('terraform -chdir=DevOpsCode/Terraform init')
-            }
-        }
         stage('Approval') {
             when {
                 not {
@@ -31,6 +26,7 @@ pipeline {
                 equals expected: true, actual: params.destroy
             }
             steps {
+                sh('terraform -chdir=DevOpsCode/Terraform init')
                 sh('terraform -chdir=DevOpsCode/Terraform plan -out tfplan -var current_build=$BUILD_NUMBER -var current_environment=$environment -var usernamedb=$MYSQL_USER -var passworddb=$MYSQL_PASS -no-color')
                 sh("terraform -chdir=DevOpsCode/Terraform show -no-color tfplan > tfplan.txt")
                 script {
@@ -42,13 +38,14 @@ pipeline {
         }
 
 
-        stage('Terraform apply') {
+        stage('Create infrastructure') {
             when {
                 not {
                     equals expected: true, actual: params.destroy
                 }
             }
-            steps { 
+            steps {
+                sh('terraform -chdir=DevOpsCode/Terraform init') 
                 sh('terraform -chdir=DevOpsCode/Terraform apply  -input=false -var current_build=$BUILD_NUMBER -var current_environment=$environment -var usernamedb=$MYSQL_USER -var passworddb=$MYSQL_PASS -no-color --auto-approve')
             }
         }
@@ -79,6 +76,7 @@ pipeline {
                 equals expected: true, actual: params.destroy
             }
             steps {
+                sh('terraform -chdir=DevOpsCode/Terraform init')
                 sh('terraform -chdir=DevOpsCode/Terraform destroy -var usernamedb=$MYSQL_USER -var passworddb=$MYSQL_PASS --auto-approve')
             }
         }

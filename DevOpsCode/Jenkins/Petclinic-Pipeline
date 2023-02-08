@@ -5,8 +5,15 @@ pipeline {
 parameters {
         string(name: 'environment', defaultValue: 'dev', description: 'Branch')
         string(name: 'workspace', defaultValue: 'Petclinic', description: 'Folder')
+        string(name: 'version', defaultValue: '1', description: 'Version')
+        booleanParam(name: 'autoApprove', defaultValue: true, description: 'Automatically run apply after generating plan?')
+        booleanParam(name: 'destroy', defaultValue: false, description: 'Destroy Terraform build?')
     }
     environment {
+        AWS_ACCESS_KEY_ID       =   credentials('access_key_aws')
+        AWS_SECRET_ACCESS_KEY   =   credentials('secret_key_aws')
+        MYSQL_USER              =   credentials('username_db')
+        MYSQL_PASS             =   credentials('password_db')
         DOCKER_USER       =   credentials('docker_user')
         DOCKER_PASS       =   credentials('docker_pass')
     }
@@ -16,11 +23,31 @@ parameters {
         }
     }
     stages {
-        stage('Build') {
-            steps {
-                dir("${workspace}") {
-                    sh 'chmod +x mvnw'
-                    sh './mvnw -q package '
+        stage("Create infrastructure & Build") {
+            parallel {
+                stage('Build'){
+                    steps {
+                        dir("${workspace}") {
+                            sh 'chmod +x mvnw'
+                            sh './mvnw -q package '
+                        }
+                    }
+                }
+                stage('Create infrastructure') {
+                    agent {
+                        node {
+                            label 'deploy-server'
+                        }
+                    }
+                    when {
+                        not {
+                            equals expected: true, actual: params.destroy
+                        }
+                    }
+                    steps {
+                        sh('terraform -chdir=DevOpsCode/Terraform init') 
+                        sh('terraform -chdir=DevOpsCode/Terraform apply  -input=false -var current_build=$BUILD_NUMBER -var current_environment=$environment -var usernamedb=$MYSQL_USER -var passworddb=$MYSQL_PASS -no-color --auto-approve')
+                    }
                 }
             }
         }
