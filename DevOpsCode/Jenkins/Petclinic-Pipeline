@@ -5,7 +5,6 @@ pipeline {
 parameters {
         string(name: 'environment', defaultValue: 'dev', description: 'Branch')
         string(name: 'workspace', defaultValue: 'Petclinic', description: 'Folder')
-        string(name: 'version', defaultValue: '1', description: 'Version')
     }
     environment {
         DOCKER_USER       =   credentials('docker_user')

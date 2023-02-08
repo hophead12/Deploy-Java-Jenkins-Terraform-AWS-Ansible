@@ -75,7 +75,7 @@ pipeline {
                 equals expected: true, actual: params.destroy
             }
             steps {
-                sh('terraform -chdir=DevOpsCode/Terraform destroy --auto-approve')
+                sh('terraform -chdir=DevOpsCode/Terraform destroy -var usernamedb=$MYSQL_USER -var passworddb=$MYSQL_PASS --auto-approve')
             }
         }
     }
