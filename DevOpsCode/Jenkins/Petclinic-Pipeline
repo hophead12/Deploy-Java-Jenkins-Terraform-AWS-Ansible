@@ -76,6 +76,45 @@ parameters {
                 }   
             }   
         }
+        stage('Deploy') {
+            agent {
+                node {
+                    label 'deploy-server'
+                }
+            }
+            when {
+                not {
+                    equals expected: true, actual: params.destroy
+                }
+            }
+            steps {
+                script {
+                    DB_ENDPOINT = sh(script: 'terraform -chdir=DevOpsCode/Terraform output DBserver_public_ip_address', returnStdout: true).trim()
+                    NAME_SSH_KEY = sh(script: 'terraform -chdir=DevOpsCode/Terraform output key_name_web', returnStdout: true).trim()
+                    REPO         = "reinz12/petclinic"
+                }
+                sh("terraform -chdir=DevOpsCode/Terraform output -raw private_key_web > ~/.ssh/$NAME_SSH_KEY ; chmod 0600 ~/.ssh/$NAME_SSH_KEY")
+                dir("DevOpsCode/Ansible"){
+                    sh('chmod +x ec2.py')
+                    sh("ansible-playbook -i ec2.py playbookdocker.yml -e tags_hosts=tag_Name_Web_${environment}* -e repo=$REPO -e version=$BUILD_NUMBER -e endpoint_db=$DB_ENDPOINT -e mysql_user=${MYSQL_USER} -e mysql_pass=$MYSQL_PASS -e ansible_ssh_private_key_file=~/.ssh/$NAME_SSH_KEY")
+                }
+            }
+        }
+
+        stage('Destroy') {
+            agent {
+                node {
+                    label 'deploy-server'
+                }
+            }
+            when {
+                equals expected: true, actual: params.destroy
+            }
+            steps {
+                sh('terraform -chdir=DevOpsCode/Terraform init')
+                sh('terraform -chdir=DevOpsCode/Terraform destroy -var usernamedb=$MYSQL_USER -var passworddb=$MYSQL_PASS --auto-approve')
+            }
+        }
     }
 }
         
