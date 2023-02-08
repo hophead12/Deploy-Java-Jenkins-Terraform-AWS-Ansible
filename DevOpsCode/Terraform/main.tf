@@ -15,7 +15,7 @@ resource "aws_eip" "web"{
 resource "aws_instance" "web" {
     ami                    = data.aws_ami.latest_ubuntu.id
     instance_type          = var.instance_type
-    tags                   = merge(var.common_tag, {Name = "Web-${var.current_environment}-${var.current_version}-${var.current_build}"})
+    tags                   = merge(var.common_tag, {Name = "Web-${var.current_environment}-${var.current_version}.${var.current_build}"})
     availability_zone      = data.aws_availability_zones.availability.names[0]
     key_name               = aws_key_pair.generated_key_web.key_name
     
@@ -29,8 +29,7 @@ resource "aws_instance" "web" {
   }
 
   depends_on = [
-    aws_db_instance.db,
-    aws_internet_gateway.gw
+    aws_db_instance.db
   ]
 }
 
@@ -49,29 +48,15 @@ resource "aws_db_instance" "db" {
   #publicly_accessible     = true
 
   db_name                 = "petclinic"
-  username                = "petclinic" # CHANGE!!!!!!!!!!!!!!!!!
-  password                = "petclinic"
-
+  username                = var.usernamedb 
+  password                = var.passworddb
 
   vpc_security_group_ids  = [aws_security_group.db.id]
   availability_zone       = data.aws_availability_zones.availability.names[0]
-
+  lifecycle {  
+    prevent_destroy = true 
+  }
 }                    
-
-#resource "aws_instance" "db" {
-#    ami                    = data.aws_ami.latest_aws_linux.id
-#    instance_type          = var.instance_type
-#    vpc_security_group_ids = [aws_security_group.db.id]
-#    tags                   = merge(var.common_tag, {Name = "DB-${var.current_environment}-${var.current_version}-${var.current_build}"})
-#    availability_zone      = data.aws_availability_zones.availability.names[1] 
-#    key_name               = aws_key_pair.generated_key_db.key_name
-#  
-#  
-#  lifecycle {
-#  #prevent_destroy = true # the server will not be destroyed 
-#  }
-#}
-
 
 
 resource "aws_security_group" "db" {

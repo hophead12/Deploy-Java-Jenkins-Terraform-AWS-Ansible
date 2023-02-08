@@ -43,3 +43,14 @@ variable "common_tag" {
     Project = "Final-Task"
   }
 }
+
+
+variable "usernamedb" {
+  description = "The username for the DB master user"
+  type        = string
+}
+
+variable "passworddb" {
+  description = "The password for the DB master user"
+  type        = string
+}
