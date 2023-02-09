@@ -20,7 +20,7 @@
 
   - set_fact: registry="{{ repository }}:{{ version }}"
   - name: clear stop docker
-    shell: docker system prune -af
+    shell: docker stop $(docker ps -aq) ; docker rmi $(docker ps -aq)
 
   - name: pull images from docker hub
     shell: docker pull {{ registry }}
