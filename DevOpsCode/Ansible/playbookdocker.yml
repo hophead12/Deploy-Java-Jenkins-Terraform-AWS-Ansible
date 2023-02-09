@@ -24,7 +24,7 @@
     shell: docker pull {{ registry }}
 
   - name: clear stop docker
-    shell: docker stop $(docker ps -aq)
+    shell: docker system prune -af
 
   - name: docker run app
     shell: docker run -d -e DATABASE_IP={{ DB_ip }} -e MYSQL_USER={{ mysql_user }} -e MYSQL_PASS={{ mysql_pass }} -p 80:8080 {{ registry }} 
