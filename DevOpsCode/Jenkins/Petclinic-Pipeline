@@ -58,7 +58,7 @@ parameters {
                         dir("${workspace}") {
                             sh('chmod +x mvnw')
                             sh('./mvnw -q package ')
-                            sh('docker build -t ${DOCKER_USER}/petclinic:${BUILD_NUMBER} .')
+                            sh 'ls -l'
                         }
                     }
                 }
@@ -84,6 +84,7 @@ parameters {
             steps {
                  dir("${workspace}") {
                     sh './mvnw -q test'
+                    sh 'ls -l'
                 }
             }
         
@@ -96,6 +97,7 @@ parameters {
             }
             steps{
                  dir("${workspace}") {
+                    sh('docker build -t ${DOCKER_USER}/petclinic:${BUILD_NUMBER} .')
                     sh('echo ${DOCKER_PASS} | docker login --username ${DOCKER_USER} --password-stdin')
                     sh('docker push ${DOCKER_USER}/petclinic:${BUILD_NUMBER}')
                 }   
