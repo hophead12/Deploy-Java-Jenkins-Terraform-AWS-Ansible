@@ -57,8 +57,8 @@ parameters {
                     steps {
                         dir("${workspace}") {
                             sh('chmod +x mvnw')
+                            sh('./mvnw -q clean ')
                             sh('./mvnw -q package ')
-                            sh 'ls -l'
                         }
                     }
                 }
@@ -84,7 +84,6 @@ parameters {
             steps {
                  dir("${workspace}") {
                     sh './mvnw -q test'
-                    sh 'ls -l'
                 }
             }
         
