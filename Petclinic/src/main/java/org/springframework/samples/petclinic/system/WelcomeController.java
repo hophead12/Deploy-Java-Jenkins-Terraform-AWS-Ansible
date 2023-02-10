@@ -28,11 +28,3 @@ class WelcomeController {
 	}
 
 }
-@Controller
-class VersionContriller {
-
-	@GetMapping("/")
-	public String version() {
-		return "version";
-	}
-}
