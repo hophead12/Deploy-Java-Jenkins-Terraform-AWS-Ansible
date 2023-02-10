@@ -23,11 +23,10 @@ import org.springframework.ui.Model;
 @Controller
 class WelcomeController {
 
-    private String version = System.getenv("VERSION");
-
     @GetMapping("/")
     public String welcome(Model model) {
-        model.addAttribute("version", version);
+        model.addAttribute("version", System.getenv("VERSION"));
+        System.out.println(System.getenv("VERSION"));
         return "welcome";
     }
 }
