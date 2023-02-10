@@ -26,6 +26,11 @@ class WelcomeController {
 	public String welcome() {
 		return "welcome";
 	}
+
+}
+@Controller
+class VersionContriller {
+
 	@GetMapping("/")
 	public String version() {
 		return "version";
