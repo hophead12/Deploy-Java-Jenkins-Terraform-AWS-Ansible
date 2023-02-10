@@ -28,6 +28,6 @@ class WelcomeController {
     @GetMapping("/")
     public String welcome(Model model) {
         model.addAttribute("version", version);
-        return "welcome";
+        return "version";
     }
 }
