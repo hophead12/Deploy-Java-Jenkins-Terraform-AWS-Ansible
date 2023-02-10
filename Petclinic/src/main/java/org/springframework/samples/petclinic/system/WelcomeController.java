@@ -26,7 +26,6 @@ class WelcomeController {
     @GetMapping("/")
     public String welcome(Model model) {
         model.addAttribute("version", System.getenv("VERSION"));
-        System.out.println(System.getenv("VERSION"));
         return "welcome";
     }
 }
