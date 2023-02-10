@@ -5,7 +5,7 @@
 
   vars:
    repository: "{{ repo }}"
-   version: "{{ version }}"
+   version: "Version:{{ version }}"
    DB_ip: "{{ endpoint_db }}" 
 
   tasks:
