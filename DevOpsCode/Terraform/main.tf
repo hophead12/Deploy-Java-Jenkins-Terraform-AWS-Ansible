@@ -52,7 +52,7 @@ resource "aws_db_instance" "db" {
   password                = var.passworddb
 
   vpc_security_group_ids  = [aws_security_group.db.id]
-  availability_zone       = data.aws_availability_zones.availability.names[0]
+  availability_zone       = data.aws_availability_zones.availability.names[1]
   #lifecycle {  
   #  prevent_destroy = true 
   #}
