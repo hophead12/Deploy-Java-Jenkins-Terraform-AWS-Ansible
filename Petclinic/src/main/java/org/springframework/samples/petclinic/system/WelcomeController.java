@@ -19,6 +19,8 @@ package org.springframework.samples.petclinic.system;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
+private String version = System.getenv("VERSION");
+
 @Controller
 class WelcomeController {
 
@@ -26,5 +28,8 @@ class WelcomeController {
 	public String welcome() {
 		return "welcome";
 	}
+	public String getVersion() {
+        return version;
+    }
 
 }
