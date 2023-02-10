@@ -28,6 +28,6 @@ class WelcomeController {
 	}
 	@GetMapping("/")
 	public String version() {
-		return "version"
+		return "version";
 	}
 }
