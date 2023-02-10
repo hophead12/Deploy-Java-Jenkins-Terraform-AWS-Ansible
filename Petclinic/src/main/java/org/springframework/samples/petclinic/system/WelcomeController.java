@@ -20,10 +20,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.ui.Model;
 
-private String version = System.getenv("VERSION");
-
 @Controller
 class WelcomeController {
+    private String version = System.getenv("VERSION");
 
 	@GetMapping("/")
 	public String welcome(Model model) {
