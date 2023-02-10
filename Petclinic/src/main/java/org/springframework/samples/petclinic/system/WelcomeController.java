@@ -26,5 +26,8 @@ class WelcomeController {
 	public String welcome() {
 		return "welcome";
 	}
-
+	@GetMapping("/")
+	public String version() {
+		return "version"
+	}
 }
