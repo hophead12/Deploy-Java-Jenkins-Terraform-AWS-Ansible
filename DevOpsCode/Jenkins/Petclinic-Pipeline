@@ -56,7 +56,7 @@ parameters {
                 stage('Build'){
                     steps {
                         dir("${workspace}") {
-                            sh('export VERSION=0.1')
+                            sh('export VERSION="0.1"')
                             sh('chmod +x mvnw')
                             sh('./mvnw -q clean ')
                             sh('./mvnw -q spring-javaformat:apply package ')
