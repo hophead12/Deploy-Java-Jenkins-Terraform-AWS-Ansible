@@ -58,7 +58,7 @@ parameters {
                         dir("${workspace}") {
                             sh('chmod +x mvnw')
                             sh('./mvnw -q clean ')
-                            sh('./mvnw -q package ')
+                            sh('./mvnw -q spring-javaformat:apply package ')
                         }
                     }
                 }

@@ -26,5 +26,8 @@ class WelcomeController {
 	public String welcome() {
 		return "welcome";
 	}
+	public String version() {
+		return "version";
+	}
 
 }
