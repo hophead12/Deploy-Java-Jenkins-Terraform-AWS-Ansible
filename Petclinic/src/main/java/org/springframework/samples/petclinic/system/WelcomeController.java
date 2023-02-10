@@ -18,16 +18,16 @@ package org.springframework.samples.petclinic.system;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.ui.Model;
 
 @Controller
 class WelcomeController {
-
+	private String version = System.getenv("VERSION");
 	@GetMapping("/")
 	public String welcome() {
+		model.addAttribute("version", version);
 		return "welcome";
 	}
-	public String version() {
-		return "version";
-	}
+	
 
 }
