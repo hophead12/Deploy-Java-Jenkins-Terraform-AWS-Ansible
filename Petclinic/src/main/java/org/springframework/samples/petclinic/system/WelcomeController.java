@@ -22,12 +22,12 @@ import org.springframework.ui.Model;
 
 @Controller
 class WelcomeController {
-	private String version = System.getenv("VERSION");
-	@GetMapping("/")
-	public String welcome() {
-		model.addAttribute("version", version);
-		return "welcome";
-	}
-	
 
+    private String version = System.getenv("VERSION");
+
+    @GetMapping("/")
+    public String welcome(Model model) {
+        model.addAttribute("version", version);
+        return "welcome";
+    }
 }
