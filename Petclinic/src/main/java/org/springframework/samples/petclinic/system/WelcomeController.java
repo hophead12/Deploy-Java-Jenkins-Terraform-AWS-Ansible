@@ -29,5 +29,5 @@ class WelcomeController {
     	model.addAttribute("version", version);
     	return "welcome";
 	}
-
 }
+
