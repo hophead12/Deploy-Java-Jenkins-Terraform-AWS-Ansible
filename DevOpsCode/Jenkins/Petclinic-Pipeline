@@ -56,10 +56,13 @@ parameters {
                 stage('Build'){
                     steps {
                         dir("${workspace}") {
-                            sh('export VERSION="HELLO"')
-                            sh('chmod +x mvnw')
-                            sh('./mvnw -q clean ')
-                            sh('./mvnw -q spring-javaformat:apply package ')
+                            sh '''
+                                export VERSION="HELLO"
+                                chmod +x mvnw
+                                ./mvnw -q clean
+                                ./mvnw -q spring-javaformat:apply package
+                            '''
+                            
                         }
                     }
                 }
