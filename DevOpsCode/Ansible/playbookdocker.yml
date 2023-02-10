@@ -5,7 +5,7 @@
 
   vars:
    repository: "{{ repo }}"
-   version: "Version:{{ version }}"
+   Version: "Version:{{ version }}"
    DB_ip: "{{ endpoint_db }}" 
 
   tasks:
@@ -26,4 +26,4 @@
     shell: docker pull {{ registry }}
 
   - name: docker run app
-    shell: docker run -d -e DATABASE_IP={{ DB_ip }} -e MYSQL_USER={{ mysql_user }} -e MYSQL_PASS={{ mysql_pass }} -e VERSION={{ version }} -p 80:8080 {{ registry }} 
+    shell: docker run -d -e DATABASE_IP={{ DB_ip }} -e MYSQL_USER={{ mysql_user }} -e MYSQL_PASS={{ mysql_pass }} -e VERSION={{ Version }} -p 80:8080 {{ registry }} 
