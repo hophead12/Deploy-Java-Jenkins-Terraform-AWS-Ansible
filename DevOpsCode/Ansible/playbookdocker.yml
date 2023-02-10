@@ -26,4 +26,4 @@
     shell: docker pull {{ registry }}
 
   - name: docker run app
-    shell: docker run -d -e DATABASE_IP={{ DB_ip }} -e MYSQL_USER={{ mysql_user }} -e MYSQL_PASS={{ mysql_pass }} -e VERSION ='0.1' -p 80:8080 {{ registry }} 
+    shell: docker run -d -e DATABASE_IP={{ DB_ip }} -e MYSQL_USER={{ mysql_user }} -e MYSQL_PASS={{ mysql_pass }} -e VERSION='0.1' -p 80:8080 {{ registry }} 
