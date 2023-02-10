@@ -25,11 +25,9 @@ private String version = System.getenv("VERSION");
 class WelcomeController {
 
 	@GetMapping("/")
-	public String welcome() {
-		return "welcome";
+	public String welcome(Model model) {
+    	model.addAttribute("version", version);
+    	return "welcome";
 	}
-	public String getVersion() {
-        return version;
-    }
 
 }
