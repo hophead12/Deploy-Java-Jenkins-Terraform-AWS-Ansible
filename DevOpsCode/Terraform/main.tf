@@ -3,35 +3,101 @@ provider "aws"{
 }
 
 
-resource "aws_eip" "web"{
+#resource "aws_eip" "web"{
+#
+#  #instance = aws_instance.web.id     # Create elastic IP in aws and attach it on instance web
+#  network_interface  = aws_network_interface.main.id
+#  associate_with_private_ip = aws_network_interface.main.private_ip
+#  tags     = merge(var.common_tag, {Name = "Server IP web-${var.current_environment}"})
+#}
 
-  #instance = aws_instance.web.id     # Create elastic IP in aws and attach it on instance web
-  network_interface  = aws_network_interface.main.id
-  associate_with_private_ip = aws_network_interface.main.private_ip
-  tags     = merge(var.common_tag, {Name = "Server IP web-${var.current_environment}"})
-}
 
 
-resource "aws_instance" "web" {
-    ami                    = data.aws_ami.latest_ubuntu.id
-    instance_type          = var.instance_type
-    tags                   = merge(var.common_tag, {Name = "Web-${var.current_environment}-V${var.current_version}.${var.current_build}"})
-    availability_zone      = data.aws_availability_zones.availability.names[0]
-    key_name               = aws_key_pair.generated_key_web.key_name
-    
-  network_interface {
-    network_interface_id = aws_network_interface.main.id
-    device_index         = 0
-  }
-    
+#resource "aws_instance" "web" {
+#    ami                    = data.aws_ami.latest_ubuntu.id
+#    instance_type          = var.instance_type
+#    tags                   = merge(var.common_tag, {Name = "Web-${var.current_environment}-V${var.current_version}.${var.current_build}"})
+#    availability_zone      = data.aws_availability_zones.availability.names[0]
+#    key_name               = aws_key_pair.generated_key_web.key_name
+#    
+#  network_interface {
+#    network_interface_id = aws_network_interface.main.id
+#    device_index         = 0
+#  }
+#    
+#  lifecycle {
+#   create_before_destroy = true # the server will be destroyed after create new server
+#  }
+#
+#  depends_on = [
+#    aws_db_instance.db
+#  ]
+#}
+
+resource "aws_launch_configuration" "web" {
+  #name = "WebServer-Highly-Available-LC"
+  name_prefix         = merge(var.common_tag, {Name = "Web-${var.current_environment}-V${var.current_version}.${var.current_build}"})
+  image_id            = data.aws_ami.latest_ubuntu.id
+  instance_type       = var.instance_type
+  security_groups     = [aws_security_group.web.id]
+  key_name            = aws_key_pair.generated_key_web.key_name
+
   lifecycle {
-   create_before_destroy = true # the server will be destroyed after create new server
+    create_before_destroy = true
   }
 
   depends_on = [
     aws_db_instance.db
   ]
+
+#==========================================================================
+
+resource "aws_autoscaling_group" "web" {
+  name = "${aws_launch_configuration.web.name}"
+  launch_configuration = aws_launch_configuration.web.name
+  min_size = 2
+  max_size = 2
+  min_elb_capacity = 2
+  health_check_type = "ELB"
+  
+  vpc_zone_identifier = [data.aws_availability_zones.availability.names[0], data.aws_availability_zones.availability.names[2]] #!!!
+  load_balancers = [aws_elb.web.name] 
+
+
+
+  lifecycle {
+    create_before_destroy = true
+  }  
 }
+
+#==================================================================
+
+resource "aws_elb" "web" {
+    name = "WebServer-HA-ELB"
+    availability_zones = [data.aws_availability_zones.availability.names[0], data.aws_availability_zones.availability.names[2]]
+    security_groups = [aws_security_group.web.id]
+    listener {
+      lb_port          = 80
+      lb_protocol       = "http"
+      instance_port     = 80
+      instance_protocol = "http"
+
+
+    }
+    health_check {
+      healthy_threshold = 2
+      unhealthy_threshold = 2
+      timeout = 3
+      target = "HTTP:80/"
+      interval = 10
+
+    }
+    tags = merge(var.common_tag, {Name = "Web-${var.current_environment}-V${var.current_version}.${var.current_build}"})
+}
+
+
+
+#=========================DB===========================================
 
 
 resource "aws_db_instance" "db" {
@@ -58,6 +124,7 @@ resource "aws_db_instance" "db" {
   #}
 }                    
 
+#=========================SECURITY GROUP===============================
 
 resource "aws_security_group" "db" {
   name        = "Security group DB-${var.current_environment}-V${var.current_version}"
