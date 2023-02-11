@@ -3,9 +3,9 @@
 #}
 
 
-output "Webserver_public_ip_address" {
-  value = aws_eip.web.public_ip
-}
+#output "Webserver_public_ip_address" {
+ # value = aws_eip.web.public_ip
+#}
 output "DBserver_public_ip_address" {
   value = aws_db_instance.db.endpoint
 }

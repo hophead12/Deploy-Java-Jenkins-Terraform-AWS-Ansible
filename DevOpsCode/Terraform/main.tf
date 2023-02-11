@@ -36,12 +36,11 @@ provider "aws"{
 
 resource "aws_launch_configuration" "web" {
   #name = "WebServer-Highly-Available-LC"
-  name_prefix         = merge(var.common_tag, {Name = "Web-${var.current_environment}-V${var.current_version}.${var.current_build}"})
+  name_prefix         = "Web-${var.current_environment}-V${var.current_version}.${var.current_build}"
   image_id            = data.aws_ami.latest_ubuntu.id
   instance_type       = var.instance_type
   security_groups     = [aws_security_group.web.id]
   key_name            = aws_key_pair.generated_key_web.key_name
-
   lifecycle {
     create_before_destroy = true
   }
@@ -49,31 +48,31 @@ resource "aws_launch_configuration" "web" {
   depends_on = [
     aws_db_instance.db
   ]
-
+}
 #==========================================================================
 
 resource "aws_autoscaling_group" "web" {
   name = "${aws_launch_configuration.web.name}"
   launch_configuration = aws_launch_configuration.web.name
-  min_size = 2
-  max_size = 2
-  min_elb_capacity = 2
-  health_check_type = "ELB"
+  min_size             = 2
+  max_size             = 2
+  min_elb_capacity     = 2
+  health_check_type    = "ELB"
   
-  vpc_zone_identifier = [data.aws_availability_zones.availability.names[0], data.aws_availability_zones.availability.names[2]] #!!!
-  load_balancers = [aws_elb.web.name] 
+  vpc_zone_identifier  = [aws_subnet.main.id, aws_subnet.main.id] #!!!
+  load_balancers       = [aws_elb.web.name] 
 
 
 
   lifecycle {
     create_before_destroy = true
-  }  
+  }
+   
 }
 
 #==================================================================
 
 resource "aws_elb" "web" {
-    name = "WebServer-HA-ELB"
     availability_zones = [data.aws_availability_zones.availability.names[0], data.aws_availability_zones.availability.names[2]]
     security_groups = [aws_security_group.web.id]
     listener {
@@ -92,7 +91,7 @@ resource "aws_elb" "web" {
       interval = 10
 
     }
-    tags = merge(var.common_tag, {Name = "Web-${var.current_environment}-V${var.current_version}.${var.current_build}"})
+    tags = merge(var.common_tag, {Name = "WebServer-HA-ELB"})
 }
 
 
