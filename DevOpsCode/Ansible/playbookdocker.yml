@@ -12,8 +12,10 @@
   tasks:
   - name: update/upgrade system
     shell: apt-get -y update && apt-get -y upgrade
-    async: 120
-    poll: 10
+
+  - name: 5 second pause
+      pause:
+        seconds: 200
 
   - name: install docker
     shell: apt-get -y install docker.io
