@@ -8,7 +8,7 @@ terraform {
   backend "s3" {
     bucket = "petclinic-tf-state"
     key    = "dev/terraform.tfstate"
-    region = var.region
+    region = "eu-central-1"
   }
 }
   
