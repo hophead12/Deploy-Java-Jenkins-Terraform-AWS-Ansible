@@ -56,9 +56,7 @@ resource "aws_db_subnet_group" "main" {
   name            = "main"
   subnet_ids      = [aws_subnet.main.id, aws_subnet.main2.id, aws_subnet.main3.id]
   tags            = merge(var.common_tag, {Name = "DB-SubnetGroup-Petclinic-${var.current_environment}-V${var.current_version}"})
-  lifecycle {  
-    prevent_destroy = true 
-  }
+
   depends_on = [
     aws_subnet.main,
     aws_subnet.main2,
