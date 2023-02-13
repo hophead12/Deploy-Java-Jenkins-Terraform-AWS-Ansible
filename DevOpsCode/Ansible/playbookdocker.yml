@@ -3,7 +3,7 @@
   hosts: "{{ tags_hosts }}"
   become: yes
   serial: 1
-
+  
   vars:
    repository: "{{ repo }}"
    Version: "Version:{{ version }}"
@@ -12,10 +12,6 @@
   tasks:
   - name: update/upgrade system
     shell: apt-get -y update && apt-get -y upgrade
-
-  - name: 5 second pause
-      pause:
-        seconds: 200
 
   - name: install docker
     shell: apt-get -y install docker.io
