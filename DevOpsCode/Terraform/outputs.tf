@@ -1,14 +1,11 @@
-#output "webserver_instance_id" {
-#  value = aws_instance.web
-#}
 
-
-#output "Webserver_public_ip_address" {
- # value = aws_eip.web.public_ip
-#}
+output "Webserver_public_dns" {
+  value = aws_elb.web.dns_name
+}
 output "DBserver_public_ip_address" {
   value = aws_db_instance.db.endpoint
 }
+
 output "webserver_sg_id_web" {
   value = aws_security_group.web.id
 }

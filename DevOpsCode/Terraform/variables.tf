@@ -45,12 +45,12 @@ variable "common_tag" {
 }
 
 
-variable "usernamedb" {
-  description = "The username for the DB master user"
-  type        = string
-}
+#variable "usernamedb" {
+#  description = "The username for the DB master user"
+#  type        = string
+#}
 
-variable "passworddb" {
-  description = "The password for the DB master user"
-  type        = string
-}
+#variable "passworddb" {
+#  description = "The password for the DB master user"
+#  type        = string
+#}
