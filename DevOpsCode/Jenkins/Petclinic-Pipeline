@@ -52,6 +52,7 @@ parameters {
                     equals expected: true, actual: params.destroy
                 }
             }
+            def autoCancelled = true
             parallel {
                 stage('Build'){
                     steps {
@@ -62,15 +63,21 @@ parameters {
                         }
                     }
                 }
-                stage('Create Infrastructure') {
-                    agent {
-                        node {
-                            label 'deploy-server'
+                try {
+                    stage('Create Infrastructure') {
+                        agent {
+                            node {
+                                label 'deploy-server'
+                            }
+                        }
+                        steps {
+                            sh('terraform -chdir=DevOpsCode/Terraform init') 
+                            sh('terraform -chdir=DevOpsCode/Terraform apply  -input=false -var current_build=$BUILD_NUMBER -var current_version=$version -var current_environment=$environment -var usernamedb=$MYSQL_USER -var passworddb=$MYSQL_PASS -no-color --auto-approve')
                         }
                     }
-                    steps {
-                        sh('terraform -chdir=DevOpsCode/Terraform init') 
-                        sh('terraform -chdir=DevOpsCode/Terraform apply  -input=false -var current_build=$BUILD_NUMBER -var current_version=$version -var current_environment=$environment -var usernamedb=$MYSQL_USER -var passworddb=$MYSQL_PASS -no-color --auto-approve')
+                    if(autoCancelled) {
+                        current_build.result = 'SUCCESS'
+                        return
                     }
                 }
             }
