@@ -26,10 +26,7 @@ variable "current_version" {
   description = "current version"
   default = "1"
 }
-variable "current_build" {
-  description = "current build"
-  default = "0"
-}
+
 variable "current_environment" {
   description = "current env"
   default = "env"
