@@ -66,7 +66,7 @@ resource "aws_elb" "web" {
       unhealthy_threshold = 2
       timeout             = 30
       target              = "TCP:22"
-      interval            = 15
+      interval            = 150
     }
     tags = merge(var.common_tag, {Name = "WebServer-Highly-Avaibility-ELB"})
 
