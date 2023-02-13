@@ -52,7 +52,6 @@ parameters {
                     equals expected: true, actual: params.destroy
                 }
             }
-            def autoCancelled = true
             parallel {
                 stage('Build'){
                     steps {
@@ -63,6 +62,7 @@ parameters {
                         }
                     }
                 }
+                
                 stage('Create Infrastructure') {
                     agent {
                         node {
