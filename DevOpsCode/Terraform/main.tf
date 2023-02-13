@@ -2,6 +2,20 @@ provider "aws"{
   region     = var.region
 }
 
+
+
+terraform {
+  backend "s3" {
+    bucket = "petclinic-tf-state"
+    key    = "dev/terraform.tfstate"
+    region = var.region
+  }
+}
+  
+
+
+
+
 resource "aws_launch_configuration" "web" {
   name_prefix         = "Web-${var.current_environment}-V${var.current_version}.${var.current_build}"
   image_id            = data.aws_ami.latest_ubuntu.id
@@ -64,9 +78,9 @@ resource "aws_elb" "web" {
     health_check {
       healthy_threshold   = 2
       unhealthy_threshold = 2
-      timeout = 50
-      target = "HTTP:80/"
-      interval = 300
+      timeout             = 3
+      target              = "TCP:22"
+      interval            = 15
     }
     tags = merge(var.common_tag, {Name = "WebServer-Highly-Avaibility-ELB"})
 
