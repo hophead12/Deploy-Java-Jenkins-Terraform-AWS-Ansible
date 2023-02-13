@@ -2,7 +2,8 @@
 - name: Install docker to instances, pull image and run app 
   hosts: "{{ tags_hosts }}"
   become: yes
-
+  serial: 1
+  
   vars:
    repository: "{{ repo }}"
    Version: "Version:{{ version }}"
