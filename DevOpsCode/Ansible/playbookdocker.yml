@@ -12,7 +12,7 @@
   tasks:
   - name: Pause for 1 minutes to build app cache
     ansible.builtin.pause:
-      minutes: 0.5
+      seconds: 30
 
   - name: update/upgrade system
     shell: apt-get -y update && apt-get -y upgrade
