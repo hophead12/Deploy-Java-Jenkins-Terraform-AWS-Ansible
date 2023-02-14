@@ -17,7 +17,7 @@ terraform {
 
 
 resource "aws_launch_configuration" "web" {
-  name_prefix         = "Web-${var.current_environment}-V${var.current_version}.${var.current_build}"
+  name_prefix         = "Web-${var.current_environment}-V${var.current_version}"
   image_id            = data.aws_ami.latest_ubuntu.id
   instance_type       = var.instance_type
   security_groups     = [aws_security_group.web.id]
@@ -45,7 +45,7 @@ resource "aws_autoscaling_group" "web" {
 
   dynamic "tag" {
     for_each = {
-        Name = "Web-${var.current_environment}-V${var.current_version}.${var.current_build}"
+        Name = "Web-${var.current_environment}-V${var.current_version}"
         Owner = "Danylo Bosenko"
         Project = "Final-Task"
     }

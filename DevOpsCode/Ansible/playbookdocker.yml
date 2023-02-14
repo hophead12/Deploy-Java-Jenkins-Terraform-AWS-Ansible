@@ -2,13 +2,18 @@
 - name: Install docker to instances, pull image and run app 
   hosts: "{{ tags_hosts }}"
   become: yes
-
+  serial: 1
+  
   vars:
    repository: "{{ repo }}"
    Version: "Version:{{ version }}"
    DB_ip: "{{ endpoint_db }}" 
 
   tasks:
+  - name: Pause for 30 seconds to build app cache
+    ansible.builtin.pause:
+      seconds: 30
+
   - name: update/upgrade system
     shell: apt-get -y update && apt-get -y upgrade
 

@@ -37,7 +37,7 @@ parameters {
             }
             steps {
                 sh('terraform -chdir=DevOpsCode/Terraform init -migrate-state')
-                sh('terraform -chdir=DevOpsCode/Terraform plan -out tfplan -var current_build=$BUILD_NUMBER -var current_version=$version -var current_environment=$environment -var usernamedb=$MYSQL_USER -var passworddb=$MYSQL_PASS -no-color')
+                sh('terraform -chdir=DevOpsCode/Terraform plan -out tfplan  -var current_version=$version -var current_environment=$environment -var usernamedb=$MYSQL_USER -var passworddb=$MYSQL_PASS -no-color')
                 sh("terraform -chdir=DevOpsCode/Terraform show -no-color tfplan > tfplan.txt")
                 script {
                     def plan = readFile 'tfplan.txt'
@@ -71,7 +71,7 @@ parameters {
                     }
                     steps {
                         sh('terraform -chdir=DevOpsCode/Terraform init -migrate-state') 
-                        sh('terraform -chdir=DevOpsCode/Terraform apply  -input=false -var current_build=$BUILD_NUMBER -var current_version=$version -var current_environment=$environment -var usernamedb=$MYSQL_USER -var passworddb=$MYSQL_PASS -no-color --auto-approve')
+                        sh('terraform -chdir=DevOpsCode/Terraform apply  -input=false  -var current_version=$version -var current_environment=$environment -var usernamedb=$MYSQL_USER -var passworddb=$MYSQL_PASS -no-color --auto-approve')
                     }
                 }
             }
@@ -100,6 +100,8 @@ parameters {
                     sh('docker build -t ${DOCKER_USER}/petclinic:${BUILD_NUMBER} .')
                     sh('echo ${DOCKER_PASS} | docker login --username ${DOCKER_USER} --password-stdin')
                     sh('docker push ${DOCKER_USER}/petclinic:${BUILD_NUMBER}')
+                    
+                    sh('docker rmi -f $(docker images -q | tail -2 | head -1)') 
                 }   
             }
         }
@@ -125,10 +127,10 @@ parameters {
                 sh("terraform -chdir=DevOpsCode/Terraform output -raw private_key_web > ~/.ssh/$NAME_SSH_KEY ; chmod 0600 ~/.ssh/$NAME_SSH_KEY")
                 dir("DevOpsCode/Ansible"){
                     sh('chmod +x ec2.py')
-                    sh("ansible-playbook -i ec2.py playbookdocker.yml -e tags_hosts=tag_Name_Web_${environment}* -e repo=$REPO -e version=$BUILD_NUMBER -e endpoint_db=$DB_ENDPOINT -e mysql_user=${MYSQL_USER} -e mysql_pass=$MYSQL_PASS -e ansible_ssh_private_key_file=~/.ssh/$NAME_SSH_KEY")
+                    sh("ansible-playbook -i ec2.py playbookdocker.yml -e tags_hosts=tag_Name_Web_${environment}* -e repo=$REPO -e version=$BUILD_NUMBER -e endpoint_db=$DB_ENDPOINT -e mysql_user=${MYSQL_USER} -e mysql_pass=${MYSQL_PASS} -e ansible_ssh_private_key_file=~/.ssh/$NAME_SSH_KEY")
                 }
                 script {
-                    input message: "Please check this address ${DNS}"
+                    input("Please check this address ${DNS}")
 
                 }
             }
