@@ -150,10 +150,10 @@ parameters {
     }
     post {
         success{
-            echo "Please check this address $DNS"
+            echo "Please check this address $DNS $BRANCH_NAME"
         }
         failure{
-            emailext attachLog: true, body: 'This is the failure email from jenkins with build log', subject: "Failure Build $BRANCH_NAME", to: 'danildoter.db@gmail.com'
+            emailext attachLog: true, body: "This is the failure email from jenkins with build log $BRANCH_NAME", subject: 'Failure Build', to: 'danildoter.db@gmail.com'
         }
         
     }
