@@ -17,6 +17,7 @@ parameters {
         DOCKER_USER             =   credentials('docker_user')
         DOCKER_PASS             =   credentials('docker_pass')
         DOCKER_REPO             =   "reinz12/petclinic"
+        EMAIL                   =   "danildoter.db@gmail.com"
     }
     agent {
         node {
@@ -153,8 +154,7 @@ parameters {
             echo "Please check this address $DNS"
         }
         failure{
-            echo "$BRANCH_NAME"
-            emailext attachLog: true, body: 'This is the failure email from jenkins with build log', subject: 'Failure Build', to: 'danildoter.db@gmail.com'
+            emailext attachLog: true, body: '$BUILD_URL\nThis is the failure email from jenkins with build log', subject: 'Failure Build $PROJECT_NAME - #$BUILD_NUMBER', to: "${EMAIL}"
         }
         
     }
