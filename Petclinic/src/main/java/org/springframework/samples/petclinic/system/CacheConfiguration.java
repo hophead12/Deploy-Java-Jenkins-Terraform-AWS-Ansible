@@ -28,7 +28,7 @@ import javax.cache.configuration.MutableConfiguration;
  * creates the used cache for the application and enables statistics that become
  * accessible via JMX.
  */
-Configuration(proxyBeanMethods = false)
+@Configuration(proxyBeanMethods = false)
 @EnableCaching
 class CacheConfiguration {
 
