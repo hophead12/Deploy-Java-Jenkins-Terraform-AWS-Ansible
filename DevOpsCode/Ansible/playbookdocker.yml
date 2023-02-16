@@ -10,9 +10,9 @@
    DB_ip: "{{ endpoint_db }}" 
 
   tasks:
-  - name: Pause for 30 seconds to build app cache
+  - name: Pause for 20 seconds to build app cache
     ansible.builtin.pause:
-      seconds: 30
+      seconds: 20
 
   - name: update/upgrade system
     shell: apt-get -y update && apt-get -y upgrade
