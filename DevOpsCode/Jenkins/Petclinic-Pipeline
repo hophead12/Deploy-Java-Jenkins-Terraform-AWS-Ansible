@@ -16,6 +16,9 @@ parameters {
         MYSQL_PASS              =   credentials('password_db')
         DOCKER_USER             =   credentials('docker_user')
         DOCKER_PASS             =   credentials('docker_pass')
+        EMAIL                   =   credentials('email')
+        DOCKER_REPO             =   "reinz12/petclinic"
+
     }
     agent {
         node {
@@ -101,7 +104,7 @@ parameters {
                     sh('echo ${DOCKER_PASS} | docker login --username ${DOCKER_USER} --password-stdin')
                     sh('docker push ${DOCKER_USER}/petclinic:${BUILD_NUMBER}')
                     
-                    sh('docker rmi -f $(docker images -q | tail -2 | head -1)') 
+                    sh('docker rmi -f $(docker images -q | head -2 | tail -1)') 
                 }   
             }
         }
@@ -122,17 +125,13 @@ parameters {
                     DNS = sh(script: 'terraform -chdir=DevOpsCode/Terraform output Webserver_public_dns', returnStdout: true).trim()
                     DB_ENDPOINT = sh(script: 'terraform -chdir=DevOpsCode/Terraform output DBserver_public_ip_address', returnStdout: true).trim()
                     NAME_SSH_KEY = sh(script: 'terraform -chdir=DevOpsCode/Terraform output key_name_web', returnStdout: true).trim()
-                    REPO         = "reinz12/petclinic"
                 }
                 sh("terraform -chdir=DevOpsCode/Terraform output -raw private_key_web > ~/.ssh/$NAME_SSH_KEY ; chmod 0600 ~/.ssh/$NAME_SSH_KEY")
                 dir("DevOpsCode/Ansible"){
                     sh('chmod +x ec2.py')
-                    sh("ansible-playbook -i ec2.py playbookdocker.yml -e tags_hosts=tag_Name_Web_${environment}* -e repo=$REPO -e version=$BUILD_NUMBER -e endpoint_db=$DB_ENDPOINT -e mysql_user=${MYSQL_USER} -e mysql_pass=${MYSQL_PASS} -e ansible_ssh_private_key_file=~/.ssh/$NAME_SSH_KEY")
+                    sh("ansible-playbook -i ec2.py playbookdocker.yml -e tags_hosts=tag_Name_Web_${environment}* -e repo=${DOCKER_REPO} -e version=$BUILD_NUMBER -e endpoint_db=$DB_ENDPOINT -e mysql_user=${MYSQL_USER} -e mysql_pass=${MYSQL_PASS} -e ansible_ssh_private_key_file=~/.ssh/$NAME_SSH_KEY")
                 }
-                script {
-                    input("Please check this address ${DNS}")
-
-                }
+                
             }
         }
 
@@ -150,6 +149,15 @@ parameters {
                 sh('terraform -chdir=DevOpsCode/Terraform destroy -var usernamedb=$MYSQL_USER -var passworddb=$MYSQL_PASS --auto-approve')
             }
         }
+    }
+    post {
+        success{
+            echo "Please check this address $DNS"
+        }
+        failure{
+            emailext attachLog: true, body: '$BUILD_URL\nThis is the failure email from jenkins with build log', subject: 'Failure Build $PROJECT_NAME - #$BUILD_NUMBER', to: "${EMAIL}"
+        }
+        
     }
 }
         
