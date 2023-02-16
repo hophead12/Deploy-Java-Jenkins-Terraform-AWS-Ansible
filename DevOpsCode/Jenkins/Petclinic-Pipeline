@@ -15,7 +15,7 @@ parameters {
         MYSQL_USER              =   credentials('username_db')
         MYSQL_PASS              =   credentials('password_db')
         DOCKER_USER             =   credentials('docker_user')
-        DOCKER_PASS             =   credentials('docker_pass'
+        DOCKER_PASS             =   credentials('docker_pass')
         DOCKER_REPO             =   "reinz12/petclinic"
     }
     agent {
