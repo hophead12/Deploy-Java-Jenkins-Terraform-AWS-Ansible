@@ -2,7 +2,7 @@ provider "aws"{
   region     = var.region
 }
 
-
+#===============BACKEND============================
 
 terraform {
   backend "s3" {
@@ -14,7 +14,7 @@ terraform {
   
 
 
-
+#==================ALC===ASG===ELB=================
 
 resource "aws_launch_configuration" "web" {
   name_prefix         = "Web-${var.current_environment}-V${var.current_version}"
@@ -89,7 +89,7 @@ resource "aws_elb" "web" {
     ]
 }
 
-#=================DB=========================
+#=====================DB=========================
 
 
 
@@ -117,7 +117,7 @@ resource "aws_db_instance" "db" {
   #}
 }                    
 
-#=========================SECURITY GROUP===============================
+#===================SECURITY GROUP==========================
 
 resource "aws_security_group" "db" {
   name        = "Security group DB-${var.current_environment}-V${var.current_version}"

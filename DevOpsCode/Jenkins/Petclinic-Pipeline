@@ -129,10 +129,7 @@ parameters {
                     sh('chmod +x ec2.py')
                     sh("ansible-playbook -i ec2.py playbookdocker.yml -e tags_hosts=tag_Name_Web_${environment}* -e repo=$REPO -e version=$BUILD_NUMBER -e endpoint_db=$DB_ENDPOINT -e mysql_user=${MYSQL_USER} -e mysql_pass=${MYSQL_PASS} -e ansible_ssh_private_key_file=~/.ssh/$NAME_SSH_KEY")
                 }
-                script {
-                    input("Please check this address ${DNS}")
-
-                }
+                echo "Please check this address ${DNS}"
             }
         }
 
@@ -150,6 +147,12 @@ parameters {
                 sh('terraform -chdir=DevOpsCode/Terraform destroy -var usernamedb=$MYSQL_USER -var passworddb=$MYSQL_PASS --auto-approve')
             }
         }
+    }
+    post {
+        failure{
+            emailext attachLog: true, body: 'This is the failure email from jenkins with build log', subject: 'Failure Build', to: 'danildoter.db@gmail.com'
+        }
+        
     }
 }
         
