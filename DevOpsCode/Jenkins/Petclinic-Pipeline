@@ -25,11 +25,6 @@ parameters {
             label 'build-server'
         }
     }
-    if (params.environment.isEmpty()){
-            script{
-                params.environment = 'dev'
-            }
-    }
     stages {
         stage('Approval') {
             agent {
@@ -55,6 +50,11 @@ parameters {
             }
         }
         stage("Create Infrastructure & Build") {
+            if (params.environment.isEmpty()){
+                script{
+                    params.environment = 'dev'
+                }
+            }
             when {
                 not {
                     equals expected: true, actual: params.destroy
