@@ -40,7 +40,14 @@ parameters {
                 equals expected: true, actual: params.destroy
             }
             steps {
-                sh('terraform -chdir=DevOpsCode/Terraform init -migrate-state')
+                script{
+                    if (params.environment.isEmpty()){
+                        echo "env is empty"
+                        environment = env.BRANCH_NAME
+                        echo "env is $environment"
+                    }
+                }
+                sh("terraform -chdir=DevOpsCode/Terraform init -backend-config='key=$environment/terraform.tfstate' -migrate-state")
                 sh('terraform -chdir=DevOpsCode/Terraform plan -out tfplan  -var current_version=$version -var current_environment=$environment -var usernamedb=$MYSQL_USER -var passworddb=$MYSQL_PASS -no-color')
                 sh("terraform -chdir=DevOpsCode/Terraform show -no-color tfplan > tfplan.txt")
                 script {
@@ -77,7 +84,6 @@ parameters {
                         script{
                             if (params.environment.isEmpty()){
                                     echo "env is empty"
-                                    echo "git branch is $BRANCH_NAME"
                                     environment = env.BRANCH_NAME
                                     echo "env is $environment"
                             }
@@ -130,7 +136,7 @@ parameters {
                 }
             }
             steps {
-                sh('terraform -chdir=DevOpsCode/Terraform init -migrate-state')
+                sh("terraform -chdir=DevOpsCode/Terraform init -backend-config='key=$environment/terraform.tfstate' -migrate-state")
                 script {
                     DNS = sh(script: 'terraform -chdir=DevOpsCode/Terraform output Webserver_public_dns', returnStdout: true).trim()
                     DB_ENDPOINT = sh(script: 'terraform -chdir=DevOpsCode/Terraform output DBserver_public_ip_address', returnStdout: true).trim()
@@ -155,7 +161,7 @@ parameters {
                 equals expected: true, actual: params.destroy
             }
             steps {
-                sh('terraform -chdir=DevOpsCode/Terraform init -migrate-state')
+                sh("terraform -chdir=DevOpsCode/Terraform init -backend-config='key=$environment/terraform.tfstate' -migrate-state")
                 sh('terraform -chdir=DevOpsCode/Terraform destroy -var usernamedb=$MYSQL_USER -var passworddb=$MYSQL_PASS --auto-approve')
             }
         }
