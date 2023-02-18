@@ -97,7 +97,7 @@ resource "aws_db_instance" "db" {
   
   db_subnet_group_name    = aws_db_subnet_group.main.name
   
-  identifier              = "db-petclinic" 
+  identifier              = "db-petclinic-${var.current_environment}" 
   engine                  = "mysql"
   engine_version          = "5.7"
   instance_class          = "db.t3.micro"
