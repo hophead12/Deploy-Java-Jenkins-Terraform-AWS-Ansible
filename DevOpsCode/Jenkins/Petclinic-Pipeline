@@ -77,6 +77,7 @@ parameters {
                             if (params.environment.isEmpty()){
                                 script{
                                     echo "env is empty"
+                                    echo "$environment"
                                     params.environment = env.BRANCH_NAME
 
                                 }
