@@ -66,7 +66,7 @@ resource "aws_autoscaling_group" "web" {
 
 
 resource "aws_elb" "web" {
-    name = "WebServer-HA-ELB"
+    name = "WebServer-${var.current_environment}-V${var.current_version}"
     security_groups = [aws_security_group.web.id]
     subnets = [aws_subnet.main.id, aws_subnet.main2.id, aws_subnet.main3.id]
     listener {
