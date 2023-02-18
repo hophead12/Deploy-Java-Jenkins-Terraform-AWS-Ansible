@@ -26,9 +26,9 @@ parameters {
         }
     }
     stages {
-        if ($environment == 'None'){
+        if (params.environment == 'None'){
             script{
-                $environment = $GIT_BRANCH
+                params.environment = env.GIT_BRANCH
             }
         }
         stage('Approval') {
