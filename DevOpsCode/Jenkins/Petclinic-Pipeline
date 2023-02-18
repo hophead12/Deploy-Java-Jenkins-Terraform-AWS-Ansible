@@ -78,7 +78,7 @@ parameters {
                                 script{
                                     echo "env is empty"
                                     echo "git branch is $GIT_BRANCH"
-                                    params.environment = "$GIT_BRANCH"
+                                    environment = dev
                                     echo "env is $environment"
 
                                 }
