@@ -18,6 +18,7 @@ parameters {
         DOCKER_PASS             =   credentials('docker_pass')
         EMAIL                   =   credentials('email')
         DOCKER_REPO             =   credentials('docker_repo')
+        BRANCH_NAME             =   "${GIT_BRANCH.replaceFirst(/^.*\//, '')}"
 
     }
     agent {
@@ -76,8 +77,8 @@ parameters {
                         script{
                             if (params.environment.isEmpty()){
                                     echo "env is empty"
-                                    echo "git branch is $GIT_BRANCH"
-                                    environment = env.GIT_BRANCH
+                                    echo "git branch is $BRANCH_NAME"
+                                    environment = env.BRANCH_NAME
                                     echo "env is $environment"
                             }
                         }
