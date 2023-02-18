@@ -25,12 +25,12 @@ parameters {
             label 'build-server'
         }
     }
-    stages {
-        if (params.environment.isEmpty()){
+    if (params.environment.isEmpty()){
             script{
                 params.environment = 'dev'
             }
-        }
+    }
+    stages {
         stage('Approval') {
             agent {
                 node {
