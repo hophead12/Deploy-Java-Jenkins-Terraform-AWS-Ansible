@@ -50,17 +50,6 @@ parameters {
             }
         }
         stage("Create Infrastructure & Build") {
-            steps {
-                script{
-                    if (params.environment.isEmpty()){
-                        script{
-                            params.environment = env.GIT_BRANCH
-                            echo "$environment"
-                            echo "$GIT_BRANCH"
-                        }
-                    }
-                }
-            }
             when {
                 not {
                     equals expected: true, actual: params.destroy
@@ -84,6 +73,15 @@ parameters {
                         }
                     }
                     steps {
+                        script{
+                            if (params.environment.isEmpty()){
+                                script{
+                                    params.environment = env.GIT_BRANCH
+                                    echo "$environment"
+                                    echo "$GIT_BRANCH"
+                                }
+                            }
+                        }
                         sh('terraform -chdir=DevOpsCode/Terraform init -migrate-state') 
                         sh('terraform -chdir=DevOpsCode/Terraform apply  -input=false  -var current_version=$version -var current_environment=$environment -var usernamedb=$MYSQL_USER -var passworddb=$MYSQL_PASS -no-color --auto-approve')
                     }
