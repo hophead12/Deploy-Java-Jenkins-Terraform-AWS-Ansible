@@ -7,7 +7,6 @@ provider "aws"{
 terraform {
   backend "s3" {
     bucket = "petclinic-tf-state"
-    key    = "${var.current_environment}/terraform.tfstate"
     region = "eu-central-1"
   }
 }
