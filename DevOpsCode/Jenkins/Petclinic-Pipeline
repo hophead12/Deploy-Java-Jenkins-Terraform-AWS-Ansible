@@ -27,10 +27,10 @@ parameters {
     }
     stages {
         if (parameters.environment == None){
-            parameters.environment == env.GIT_BRANCH
+            script{
+                parameters.environment = env.GIT_BRANCH
+            }
         }
-        echo env.GIT_BRANCH
-        echo parameters.environment
         stage('Approval') {
             agent {
                 node {
