@@ -77,7 +77,7 @@ parameters {
                             if (params.environment.isEmpty()){
                                     echo "env is empty"
                                     echo "git branch is $GIT_BRANCH"
-                                    params.environment = 'dev'
+                                    environment = 'dev'
                                     echo "env is $environment"
                             }
                         }
