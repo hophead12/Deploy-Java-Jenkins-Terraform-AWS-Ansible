@@ -53,7 +53,7 @@ resource "aws_subnet" "main3" {
 }
 
 resource "aws_db_subnet_group" "main" {
-  name            = "main"
+  name            = "${var.current_environment}"
   subnet_ids      = [aws_subnet.main.id, aws_subnet.main2.id, aws_subnet.main3.id]
   tags            = merge(var.common_tag, {Name = "DB-SubnetGroup-Petclinic-${var.current_environment}-V${var.current_version}"})
 
