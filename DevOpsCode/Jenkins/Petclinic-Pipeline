@@ -165,7 +165,7 @@ parameters {
             echo "Please check this address $DNS"
         }
         failure{
-            emailext attachLog: true, body: '$BUILD_URL\nThis is the failure email from jenkins with build log', subject: 'Failure Build $PROJECT_NAME - #$BUILD_NUMBER', to: "${EMAIL}"
+            emailext attachLog: true, body: '$BUILD_URL\nThis is the failure email from jenkins with build log', subject: 'Failure Build $PROJECT_NAME - $BRANCH_NAME - #$BUILD_NUMBER', to: "${EMAIL}"
         }
         
     }
