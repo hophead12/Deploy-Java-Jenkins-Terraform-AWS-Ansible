@@ -26,9 +26,9 @@ parameters {
         }
     }
     stages {
-        if ( environment.isEmpty() ){
+        if (params.environment.isEmpty()){
             script{
-                params.environment = env.GIT_BRANCH
+                params.environment = 'dev'
             }
         }
         stage('Approval') {
