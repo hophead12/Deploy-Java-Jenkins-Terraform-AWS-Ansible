@@ -3,7 +3,7 @@ properties([pipelineTriggers([githubPush()])])
 
 pipeline {
 parameters {
-        string(name: 'environment', defaultValue: '', description: 'Branch')
+        string(name: 'environment', defaultValue: '', description: 'Branch', required: true)
         string(name: 'workspace', defaultValue: 'Petclinic', description: 'Folder')
         string(name: 'version', defaultValue: '1', description: 'Version')
         booleanParam(name: 'autoApprove', defaultValue: true, description: 'Automatically run apply after generating plan?')
@@ -73,6 +73,13 @@ parameters {
                         }
                     }
                     steps {
+                        script{
+                            if (params.environment.isEmpty()){
+                                    echo "env is empty"
+                                    echo "git branch is $GIT_BRANCH"
+                                    echo "env is $environment"
+                            }
+                        }
                         sh('terraform -chdir=DevOpsCode/Terraform init -migrate-state') 
                         sh('terraform -chdir=DevOpsCode/Terraform apply  -input=false  -var current_version=$version -var current_environment=$environment -var usernamedb=$MYSQL_USER -var passworddb=$MYSQL_PASS -no-color --auto-approve')
                     }
