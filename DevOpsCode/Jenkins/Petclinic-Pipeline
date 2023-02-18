@@ -77,8 +77,8 @@ parameters {
                             if (params.environment.isEmpty()){
                                 script{
                                     echo "env is empty"
-                                    echo "$BRANCH_NAME"
-                                    params.environment = env.BRANCH_NAME
+                                    echo "$GIT_BRANCH"
+                                    params.environment = env.GIT_BRANCH
                                     echo "$environment"
 
                                 }
