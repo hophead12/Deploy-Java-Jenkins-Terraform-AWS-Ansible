@@ -50,10 +50,14 @@ parameters {
             }
         }
         stage("Create Infrastructure & Build") {
-            script{
-                if (params.environment.isEmpty()){
-                    script{
-                        params.environment = 'dev'
+            steps {
+                script{
+                    if (params.environment.isEmpty()){
+                        script{
+                            params.environment = env.GIT_BRANCH
+                            echo "$environment"
+                            echo "$GIT_BRANCH"
+                        }
                     }
                 }
             }
