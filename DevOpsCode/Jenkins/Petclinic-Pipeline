@@ -62,8 +62,8 @@ parameters {
                             sh('chmod +x mvnw')
                             sh('./mvnw -q clean')
                             sh('./mvnw -q spring-javaformat:apply package')
-                            echo '$environment'
-                            echo '$BRANCH_NAME'
+                            echo "${environment}"
+                            echo "${BRANCH_NAME}"   
                         }
                     }
                 }
