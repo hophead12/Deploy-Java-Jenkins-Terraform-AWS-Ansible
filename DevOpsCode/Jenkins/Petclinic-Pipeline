@@ -77,11 +77,10 @@ parameters {
                             if (params.environment.isEmpty()){
                                     echo "env is empty"
                                     echo "git branch is $GIT_BRANCH"
-                                    environment = 'dev'
+                                    environment = env.GIT_BRANCH
                                     echo "env is $environment"
                             }
                         }
-                        echo 'env is $environment'
                         sh('echo $environment $GIT_BRANCH')
                         sh('terraform -chdir=DevOpsCode/Terraform init -migrate-state') 
                         sh('terraform -chdir=DevOpsCode/Terraform apply  -input=false  -var current_version=$version -var current_environment=$environment -var usernamedb=$MYSQL_USER -var passworddb=$MYSQL_PASS -no-color --auto-approve')
