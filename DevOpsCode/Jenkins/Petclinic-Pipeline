@@ -6,7 +6,7 @@ parameters {
         string(name: 'environment', defaultValue: '', description: 'Branch')
         string(name: 'workspace', defaultValue: 'Petclinic', description: 'Folder')
         string(name: 'version', defaultValue: '1', description: 'Version')
-        booleanParam(name: 'autoApprove', defaultValue: true, description: 'Automatically run apply after generating plan?')
+        booleanParam(name: 'autoApprove', defaultValue: false, description: 'Automatically run apply after generating plan?')
         booleanParam(name: 'destroy', defaultValue: false, description: 'Destroy Terraform build?')
     }
     environment {

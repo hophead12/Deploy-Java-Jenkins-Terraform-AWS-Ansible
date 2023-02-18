@@ -111,9 +111,9 @@ resource "aws_db_instance" "db" {
 
   vpc_security_group_ids  = [aws_security_group.db.id]
   availability_zone       = data.aws_availability_zones.availability.names[1]
-  #lifecycle {  
-  #  prevent_destroy = true 
-  #}
+  lifecycle {  
+    prevent_destroy = true 
+  }
 }                    
 
 #===================SECURITY GROUP==========================
