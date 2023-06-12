@@ -1,4 +1,4 @@
-# Final-Task
+# Deploy-Java-Jenkins-Terraform-AWS-Ansible
 ## This is The Final task for EPAM Cloud&amp;DevOps Fundamentals Autumn 2022
 
 This project was created by me as part of my studies at Epam. In the project, I used my knowledge of CI/CD and IaC, Cloud, Docker, Linux, and Networking.
